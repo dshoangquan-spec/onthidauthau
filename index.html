@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ôn Thi Nghiệp Vụ Đấu Thầu</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+
+  :root {
+    --bg: #f0f4ff;
+    --bg2: #ffffff;
+    --bg3: #f1f5f9;
+    --border: #dce3eb;
+    --border2: #cbd5e1;
+    --text: #1e293b;
+    --text2: #475569;
+    --text3: #94a3b8;
+    --accent: #2563eb;
+    --accent2: #1d4ed8;
+    --green: #059669;
+    --green2: #d1fae5;
+    --red: #dc2626;
+    --red2: #fee2e2;
+    --yellow: #d97706;
+    --yellow2: #fef3c7;
+    --purple: #7c3aed;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --shadow: 0 1px 3px rgba(0,0,0,.06);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Be Vietnam Pro', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 1px 4px rgba(0,0,0,.05);
+  }
+  .header-logo {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--accent), var(--purple));
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .header-title { font-size: 16px; font-weight: 700; }
+  .header-sub { font-size: 12px; color: var(--text2); }
+  .header-right { margin-left: auto; display: flex; gap: 8px; }
+
+  /* ── CONTAINER ── */
+  .container { max-width: 800px; margin: 0 auto; padding: 20px 16px 60px; }
+
+  /* ── SCREEN MANAGEMENT ── */
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* ── HOME SCREEN ── */
+  .home-hero {
+    text-align: center;
+    padding: 32px 0 24px;
+  }
+  .home-hero h1 {
+    font-size: 26px; font-weight: 800;
+    background: linear-gradient(135deg, #e8edf5, #3b82f6);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    margin-bottom: 8px;
+  }
+  .home-hero p { color: var(--text2); font-size: 14px; }
+
+  .stats-bar {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 10px; margin: 20px 0 28px;
+  }
+  .stat-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 14px;
+    text-align: center;
+    box-shadow: var(--shadow);
+  }
+  .stat-num { font-size: 24px; font-weight: 800; font-family: 'JetBrains Mono'; }
+  .stat-num.green { color: var(--green); }
+  .stat-num.red { color: var(--red); }
+  .stat-num.blue { color: var(--accent); }
+  .stat-label { font-size: 11px; color: var(--text2); margin-top: 2px; }
+
+  .section-title {
+    font-size: 13px; font-weight: 600; color: var(--text2);
+    text-transform: uppercase; letter-spacing: 1px;
+    margin-bottom: 12px;
+  }
+
+  /* ── MODE CARDS ── */
+  .mode-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 28px; }
+  .mode-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 18px;
+    cursor: pointer; transition: all .2s;
+    text-align: center;
+    box-shadow: var(--shadow);
+  }
+  .mode-card:hover { border-color: var(--accent); background: var(--bg3); transform: translateY(-1px); }
+  .mode-card .icon { font-size: 28px; margin-bottom: 8px; }
+  .mode-card h3 { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .mode-card p { font-size: 12px; color: var(--text2); }
+  .mode-card.featured { border-color: var(--accent); background: linear-gradient(135deg, rgba(59,130,246,.1), rgba(139,92,246,.1)); }
+
+  /* ── TOPIC LIST ── */
+  .topic-list { display: flex; flex-direction: column; gap: 8px; }
+  .topic-item {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 14px 16px;
+    cursor: pointer; transition: all .2s;
+    display: flex; align-items: center; gap: 12px;
+    box-shadow: var(--shadow);
+  }
+  .topic-item:hover { border-color: var(--accent); background: var(--bg3); }
+  .topic-num {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: var(--bg3); border: 1px solid var(--border2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; color: var(--accent);
+    font-family: 'JetBrains Mono'; flex-shrink: 0;
+  }
+  .topic-info { flex: 1; }
+  .topic-name { font-size: 14px; font-weight: 600; }
+  .topic-count { font-size: 12px; color: var(--text2); margin-top: 2px; }
+  .topic-progress {
+    width: 48px; text-align: right;
+    font-size: 12px; font-family: 'JetBrains Mono'; color: var(--text3);
+  }
+  .topic-progress.done { color: var(--green); }
+
+  /* ── QUIZ SCREEN ── */
+  .quiz-header {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 16px;
+  }
+  .back-btn {
+    width: 36px; height: 36px; border-radius: 8px;
+    background: var(--bg2); border: 1px solid var(--border);
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    font-size: 18px; color: var(--text2); transition: all .2s; flex-shrink: 0;
+  }
+  .back-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .quiz-title-block { flex: 1; }
+  .quiz-mode-label { font-size: 11px; color: var(--text2); text-transform: uppercase; letter-spacing: 1px; }
+  .quiz-topic-name { font-size: 15px; font-weight: 700; }
+
+  .timer-badge {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 8px; padding: 6px 12px;
+    font-family: 'JetBrains Mono'; font-size: 15px; font-weight: 600;
+    color: var(--yellow); display: none;
+  }
+  .timer-badge.visible { display: block; }
+  .timer-badge.warning { color: var(--red); animation: pulse 1s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.6} }
+
+  /* Progress bar */
+  .progress-wrap { margin-bottom: 6px; }
+  .progress-info {
+    display: flex; justify-content: space-between;
+    font-size: 12px; color: var(--text2); margin-bottom: 6px;
+  }
+  .progress-bar {
+    height: 4px; background: var(--bg3); border-radius: 4px; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; border-radius: 4px;
+    background: linear-gradient(90deg, var(--accent), var(--purple));
+    transition: width .3s;
+  }
+
+  /* Question card */
+  .question-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px;
+    margin: 16px 0;
+    box-shadow: var(--shadow);
+  }
+  .question-num {
+    font-size: 11px; color: var(--accent);
+    font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+    margin-bottom: 10px; font-family: 'JetBrains Mono';
+  }
+  .question-text {
+    font-size: 15px; font-weight: 500; line-height: 1.7;
+    color: var(--text);
+  }
+
+  /* Options */
+  .options { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+  .option {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 12px 14px;
+    cursor: pointer; transition: all .15s;
+    display: flex; align-items: flex-start; gap: 10px;
+  }
+  .option:hover:not(.disabled) { border-color: var(--accent); background: #eff6ff; }
+  .option.selected { border-color: var(--accent); background: #dbeafe; }
+  .option.correct { border-color: var(--green) !important; background: #d1fae5 !important; }
+  .option.wrong { border-color: var(--red) !important; background: #fee2e2 !important; }
+  .option.disabled { cursor: default; }
+  .option-key {
+    width: 24px; height: 24px; flex-shrink: 0;
+    border-radius: 6px; background: var(--bg2); border: 1px solid var(--border2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; font-family: 'JetBrains Mono';
+    color: var(--text2); margin-top: 1px;
+  }
+  .option.correct .option-key { background: #d1fae5; border-color: var(--green); color: var(--green); }
+  .option.wrong .option-key { background: #fee2e2; border-color: var(--red); color: var(--red); }
+  .option.selected:not(.correct):not(.wrong) .option-key { background: #dbeafe; border-color: var(--accent); color: var(--accent); }
+  .option-text { font-size: 14px; line-height: 1.6; flex: 1; }
+
+  /* Result banner */
+  .result-banner {
+    border-radius: var(--radius-sm); padding: 10px 14px;
+    margin-top: 12px; font-size: 13px; font-weight: 600;
+    display: none; align-items: center; gap: 8px;
+  }
+  .result-banner.visible { display: flex; }
+  .result-banner.correct { background: #d1fae5; border: 1px solid var(--green); color: var(--green); }
+  .result-banner.wrong { background: #fee2e2; border: 1px solid var(--red); color: var(--red); }
+
+  /* Explain box */
+  .explain-box {
+    background: var(--bg3); border: 1px solid var(--border2);
+    border-radius: var(--radius-sm); padding: 14px;
+    margin-top: 10px; display: none;
+  }
+  .explain-box.visible { display: block; }
+  .explain-header { font-size: 11px; color: var(--accent); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .explain-text { font-size: 13px; color: var(--text2); line-height: 1.7; }
+  .explain-text .law-ref {
+    display: inline; background: #dbeafe; border-radius: 4px;
+    padding: 1px 6px; font-size: 12px; color: var(--accent); font-weight: 600;
+  }
+
+  /* Action buttons */
+  .action-row {
+    display: flex; gap: 8px; margin-top: 12px;
+    flex-wrap: wrap;
+  }
+  .btn {
+    padding: 10px 18px; border-radius: var(--radius-sm);
+    border: none; cursor: pointer; font-family: 'Be Vietnam Pro';
+    font-size: 13px; font-weight: 600; transition: all .2s;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .btn-primary { background: var(--accent); color: white; }
+  .btn-primary:hover { background: var(--accent2); }
+  .btn-ghost { background: var(--bg3); color: var(--text2); border: 1px solid var(--border); }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-explain { background: #ede9fe; color: var(--purple); border: 1px solid #c4b5fd; }
+  .btn-explain:hover { background: #ddd6fe; }
+  .btn:disabled { opacity: .4; cursor: default; }
+  .btn-sm { padding: 7px 14px; font-size: 12px; }
+
+  /* ── RESULT SCREEN ── */
+  .result-hero {
+    text-align: center; padding: 32px 20px;
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius); margin-bottom: 20px;
+    box-shadow: var(--shadow);
+  }
+  .result-emoji { font-size: 52px; margin-bottom: 12px; }
+  .result-score {
+    font-size: 48px; font-weight: 800; font-family: 'JetBrains Mono';
+    background: linear-gradient(135deg, var(--green), var(--accent));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .result-score.fail { background: linear-gradient(135deg, var(--yellow), var(--red)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .result-detail { font-size: 14px; color: var(--text2); margin-top: 8px; }
+  .result-pass { font-size: 16px; font-weight: 700; margin-top: 12px; }
+  .result-pass.pass { color: var(--green); }
+  .result-pass.fail { color: var(--red); }
+
+  .result-stats {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
+    margin-bottom: 20px;
+  }
+  .result-stat {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 14px;
+    display: flex; align-items: center; gap: 10px;
+    box-shadow: var(--shadow);
+  }
+  .result-stat-icon { font-size: 22px; }
+  .result-stat-val { font-size: 20px; font-weight: 800; font-family: 'JetBrains Mono'; }
+  .result-stat-val.g { color: var(--green); }
+  .result-stat-val.r { color: var(--red); }
+  .result-stat-label { font-size: 12px; color: var(--text2); }
+
+  /* Wrong answers list */
+  .wrong-list { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+  .wrong-item {
+    background: var(--bg2); border: 1px solid #fecaca;
+    border-radius: var(--radius-sm); padding: 12px 14px;
+    cursor: pointer; transition: all .2s;
+  }
+  .wrong-item:hover { border-color: var(--red); }
+  .wrong-item-q { font-size: 13px; font-weight: 500; margin-bottom: 6px; }
+  .wrong-item-ans {
+    display: flex; gap: 8px; font-size: 12px;
+  }
+  .wrong-item-ans span { padding: 2px 8px; border-radius: 4px; }
+  .ans-wrong { background: #fee2e2; color: var(--red); }
+  .ans-right { background: #d1fae5; color: var(--green); }
+
+  /* Nav buttons row */
+  .nav-row {
+    display: flex; gap: 8px; margin-top: 16px;
+  }
+  .nav-row .btn { flex: 1; justify-content: center; }
+
+  /* API Key modal */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,.3); backdrop-filter: blur(4px);
+    display: none; align-items: center; justify-content: center;
+    z-index: 200; padding: 16px;
+  }
+  .modal-overlay.visible { display: flex; }
+  .modal {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 24px;
+    width: 100%; max-width: 460px;
+    box-shadow: 0 4px 24px rgba(0,0,0,.12);
+  }
+  .modal h3 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+  .modal p { font-size: 13px; color: var(--text2); margin-bottom: 16px; line-height: 1.6; }
+  .modal input {
+    width: 100%; background: var(--bg3); border: 1px solid var(--border2);
+    border-radius: var(--radius-sm); padding: 10px 14px;
+    color: var(--text); font-family: 'JetBrains Mono'; font-size: 13px;
+    outline: none; margin-bottom: 12px;
+  }
+  .modal input:focus { border-color: var(--accent); }
+  .modal-row { display: flex; gap: 8px; }
+
+  /* Loading dots */
+  .loading-dots { display: inline-flex; gap: 4px; }
+  .loading-dots span {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--purple); animation: dot 1.2s infinite;
+  }
+  .loading-dots span:nth-child(2) { animation-delay: .2s; }
+  .loading-dots span:nth-child(3) { animation-delay: .4s; }
+  @keyframes dot { 0%,80%,100%{opacity:.3;transform:scale(.8)} 40%{opacity:1;transform:scale(1)} }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+
+  /* Mobile tweaks */
+  @media(max-width:480px) {
+    .mode-cards { grid-template-columns: 1fr; }
+    .result-stats { grid-template-columns: 1fr 1fr; }
+    .stats-bar { grid-template-columns: repeat(3, 1fr); }
+    .home-hero h1 { font-size: 20px; }
+    .question-text { font-size: 14px; }
+  }
+
+  .chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: var(--bg3); border: 1px solid var(--border2);
+    border-radius: 20px; padding: 4px 10px;
+    font-size: 12px; color: var(--text2);
+  }
+  .dot-green { width: 6px; height: 6px; border-radius: 50%; background: var(--green); display: inline-block; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-logo">⚖️</div>
+  <div>
+    <div class="header-title">Ôn Thi Đấu Thầu</div>
+    <div class="header-sub">390 câu hỏi nghiệp vụ</div>
+  </div>
+  <div class="header-right">
+    <button class="btn btn-ghost btn-sm" onclick="showApiModal()">🔑 API Key</button>
+  </div>
+</div>
+
+<!-- SCREENS -->
+<div class="container">
+
+  <!-- HOME -->
+  <div id="screen-home" class="screen active">
+    <div class="home-hero">
+      <h1>Nghiệp Vụ Đấu Thầu 2025</h1>
+      <p>Luật Đấu thầu 2023 · Nghị định 214/2025 · Thông tư 79/2025</p>
+    </div>
+
+    <div class="stats-bar">
+      <div class="stat-card">
+        <div class="stat-num blue" id="stat-total">390</div>
+        <div class="stat-label">Tổng câu</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num green" id="stat-done">0</div>
+        <div class="stat-label">Đã làm</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="stat-pct" style="color:var(--yellow)">0%</div>
+        <div class="stat-label">Tỉ lệ đúng</div>
+      </div>
+    </div>
+
+    <div class="section-title">Chế độ học</div>
+    <div class="mode-cards" style="margin-bottom:24px">
+      <div class="mode-card featured" onclick="startAllTopics()">
+        <div class="icon">📚</div>
+        <h3>Ôn Tất Cả</h3>
+        <p>390 câu theo thứ tự chủ đề</p>
+      </div>
+      <div class="mode-card" onclick="startTest()">
+        <div class="icon">⏱️</div>
+        <h3>Thi Thử</h3>
+        <p>70 câu ngẫu nhiên · có tính giờ</p>
+      </div>
+    </div>
+
+    <div class="section-title">Ôn theo chủ đề</div>
+    <div class="topic-list" id="topic-list"></div>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="screen-quiz" class="screen">
+    <div class="quiz-header">
+      <div class="back-btn" onclick="goHome()">←</div>
+      <div class="quiz-title-block">
+        <div class="quiz-mode-label" id="quiz-mode-label"></div>
+        <div class="quiz-topic-name" id="quiz-topic-name"></div>
+      </div>
+      <div class="timer-badge" id="timer-badge">00:00</div>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="progress-info">
+        <span id="progress-text">Câu 1 / 70</span>
+        <span id="progress-score" style="color:var(--green)">Đúng: 0</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+      </div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-num" id="q-num">CÂU 1</div>
+      <div class="question-text" id="q-text"></div>
+    </div>
+
+    <div class="options" id="options-wrap"></div>
+
+    <div class="result-banner" id="result-banner"></div>
+
+    <div class="explain-box" id="explain-box">
+      <div class="explain-header">📋 Căn cứ pháp lý</div>
+      <div class="explain-text" id="explain-text"></div>
+    </div>
+
+    <div class="action-row">
+      <button class="btn btn-explain btn-sm" id="btn-explain" onclick="getExplain()" style="display:none">
+        🔍 Xem giải thích
+      </button>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn btn-ghost" id="btn-prev" onclick="prevQ()">← Trước</button>
+      <button class="btn btn-primary" id="btn-next" onclick="nextQ()">Tiếp →</button>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div id="screen-result" class="screen">
+    <div class="result-hero">
+      <div class="result-emoji" id="res-emoji">🎉</div>
+      <div class="result-score" id="res-score"></div>
+      <div class="result-detail" id="res-detail"></div>
+      <div class="result-pass" id="res-pass"></div>
+    </div>
+
+    <div class="result-stats">
+      <div class="result-stat">
+        <div class="result-stat-icon">✅</div>
+        <div>
+          <div class="result-stat-val g" id="res-correct">0</div>
+          <div class="result-stat-label">Câu đúng</div>
+        </div>
+      </div>
+      <div class="result-stat">
+        <div class="result-stat-icon">❌</div>
+        <div>
+          <div class="result-stat-val r" id="res-wrong">0</div>
+          <div class="result-stat-label">Câu sai</div>
+        </div>
+      </div>
+      <div class="result-stat">
+        <div class="result-stat-icon">⏱️</div>
+        <div>
+          <div class="result-stat-val" id="res-time" style="color:var(--yellow)">--:--</div>
+          <div class="result-stat-label">Thời gian</div>
+        </div>
+      </div>
+      <div class="result-stat">
+        <div class="result-stat-icon">📊</div>
+        <div>
+          <div class="result-stat-val" id="res-pct" style="color:var(--accent)">0%</div>
+          <div class="result-stat-label">Tỉ lệ đúng</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="wrong-section" style="display:none">
+      <div class="section-title" style="margin-bottom:12px">❌ Câu sai — bấm để xem lại</div>
+      <div class="wrong-list" id="wrong-list"></div>
+    </div>
+
+    <div class="nav-row" style="margin-top:20px">
+      <button class="btn btn-ghost" onclick="goHome()">🏠 Về trang chủ</button>
+      <button class="btn btn-primary" id="btn-retry" onclick="retrySession()">🔄 Làm lại</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- API KEY MODAL -->
+<div class="modal-overlay" id="modal-api">
+  <div class="modal">
+    <h3>🔑 DeepSeek API Key</h3>
+    <p>Nhập API key để sử dụng tính năng giải thích căn cứ pháp lý. Key được lưu trong trình duyệt, không gửi đi đâu khác.</p>
+    <input type="password" id="api-key-input" placeholder="sk-..." />
+    <div class="modal-row">
+      <button class="btn btn-ghost" style="flex:1" onclick="closeApiModal()">Hủy</button>
+      <button class="btn btn-primary" style="flex:1" onclick="saveApiKey()">Lưu</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════
+// DATA — 390 câu hỏi
+// ════════════════════════════════════════════════════════
+const RAW_QUESTIONS = [{"question":"Trường hợp nào sau đây bắt buộc phải lựa chọn nhà thầu theo quy định tại Luật Đấu thầu?","options":["Gói thầu thuộc dự án sử dụng vốn ngân sách nhà nước của cơ quan nhà nước","Lựa chọn nhà thầu của doanh nghiệp nhà nước không sử dụng vốn ngân sách nhà nước","Lựa chọn nhà thầu của đơn vị sự nghiệp công lập tự bảo đảm chi thường xuyên không sử dụng ngân sách nhà nước","Việc thuê, mua, thuê mua nhà, trụ sở, tài sản gắn liền với đất"],"correct":"A"},{"question":"Chọn phương án đúng về phạm vi điều chỉnh của Luật Đấu thầu?","options":["Quy định về quản lý nhà nước đối với hoạt động đấu thầu","Quy định về thẩm quyền và trách nhiệm của các cơ quan, tổ chức, cá nhân trong hoạt động đấu thầu","Quy định về hoạt động lựa chọn nhà thầu thực hiện gói thầu, hoạt động lựa chọn nhà đầu tư thực hiện dự án đầu tư kinh doanh","Tất cả phương án trên đều đúng"],"correct":"D"},{"question":"Trường hợp nào sau đây không thuộc đối tượng áp dụng của Luật Đấu thầu?","options":["Gói thầu mua thuốc, hoá chất, vật tư xét nghiệm sử dụng nguồn ngân sách nhà nước của bệnh viện công lập A","Gói thầu xây dựng đường giao thông sử dụng vốn đầu tư công do Ban Quản lý dự án đầu tư xây dựng công trình tỉnh A làm chủ đầu tư","Gói thầu mua sắm trang thiết bị làm việc sử dụng vốn nhà nước của Văn phòng UBND tỉnh A","Hoạt động mua phần mềm kế toán của hộ kinh doanh cá thể"],"correct":"D"},{"question":"Theo quy định pháp luật về đấu thầu, gói thầu nào là gói thầu cung cấp dịch vụ tư vấn?","options":["Thiết kế và cung cấp hệ thống xử lý nước thải","Gói thầu lập nhiệm vụ quy hoạch vùng","Gói thầu quảng cáo trên nền tảng xã hội và phát sóng trên VTV","Gói thầu mua phần mềm kế toán MISA"],"correct":"B"},{"question":"Theo quy định pháp luật về đấu thầu, gói thầu nào là gói thầu cung cấp dịch vụ phi tư vấn?","options":["Gói thầu in sổ công tác của tỉnh A","Gói thầu thuê kiểm toán dự án","Gói thầu mua phần mềm kế toán hỗ trợ doanh nghiệp khởi nghiệp sáng tạo, doanh nghiệp nhỏ do phụ nữ làm chủ","Gói thầu xây dựng trụ sở làm việc của tỉnh A"],"correct":"A"},{"question":"Theo quy định pháp luật về đấu thầu, đấu thầu là gì?","options":["Là quá trình lựa chọn nhà thầu để ký kết, thực hiện hợp đồng cung cấp dịch vụ tư vấn, dịch vụ phi tư vấn, mua sắm hàng hóa, xây lắp trên cơ sở bảo đảm cạnh tranh, công bằng, minh bạch, hiệu quả kinh tế và trách nhiệm giải trình","Là quá trình lựa chọn nhà đầu tư để ký kết, thực hiện hợp đồng dự án đầu tư kinh doanh trên cơ sở bảo đảm cạnh tranh, công bằng, minh bạch, hiệu quả kinh tế và trách nhiệm giải trình","Là quá trình lựa chọn đơn vị để thực hiện hợp đồng thông qua các quy trình, thủ tục do pháp luật đấu thầu quy định","Phương án A và B đều đúng"],"correct":"D"},{"question":"Đấu thầu quốc tế là gì?","options":["Là hoạt động đấu thầu mà nhà thầu trong nước, nhà thầu nước ngoài được tham dự thầu","Là hoạt động đấu thầu mà nhà thầu trong nước, nhà thầu nước ngoài được tham dự thầu, trong đó nhà thầu trong nước bắt buộc phải liên danh với nhà thầu nước ngoài","Là hoạt động đấu thầu chỉ nhà thầu quốc tế được phép tham dự thầu","Là hoạt động đấu thầu chỉ nhà thầu trong nước được phép tham dự thầu"],"correct":"A"},{"question":"Giá đề nghị trúng thầu là gì?","options":["Là giá dự thầu của nhà thầu ghi trong quyết định phê duyệt kết quả lựa chọn nhà thầu","Là giá dự thầu của nhà thầu được đề nghị trúng thầu sau khi đã được sửa lỗi, hiệu chỉnh sai lệch theo yêu cầu của hồ sơ mời thầu, hồ sơ yêu cầu, trừ đi giá trị giảm giá (nếu có)","Là giá dự thầu của nhà thầu chưa tính sửa lỗi, hiệu chỉnh sai lệch và giá trị giảm giá (nếu có)","Là giá trị ghi trong hợp đồng giữa chủ đầu tư và nhà thầu"],"correct":"B"},{"question":"Theo quy định pháp luật về đấu thầu, hàng hóa gồm?","options":["Máy móc, thiết bị, nguyên liệu, nhiên liệu, vật liệu, vật tư, phụ tùng; sản phẩm; phương tiện; hàng tiêu dùng, phần mềm thương mại","Thuốc, hóa chất, vật tư xét nghiệm, thiết bị y tế","Phương án A và B đều đúng","Logistics, bảo hiểm, quảng cáo, nghiệm thu chạy thử, chụp ảnh vệ tinh"],"correct":"C"},{"question":"Đối tượng nào sau đây được hưởng ưu đãi trong lựa chọn nhà thầu?","options":["Hàng hóa có xuất xứ Việt Nam","Nhà thầu trong nước sản xuất hàng hóa có xuất xứ Việt Nam phù hợp với hồ sơ mời thầu","Sản phẩm, dịch vụ thân thiện môi trường theo quy định của pháp luật về bảo vệ môi trường","Tất cả các phương án trên đều đúng"],"correct":"D"},{"question":"Nhà thầu trong nước nào được hưởng ưu đãi trong lựa chọn nhà thầu?","options":["Nhà thầu trong nước sản xuất hàng hóa có xuất xứ Việt Nam phù hợp với hồ sơ mời thầu","Nhà thầu trong nước tham dự thầu với tư cách độc lập hoặc liên danh với nhà thầu trong nước khác khi tham dự đấu thầu quốc tế","Nhà thầu trong nước có sử dụng lao động nữ, thương binh, người khuyết tật hoặc người dân tộc thiểu số","Tất cả các phương án trên đều đúng"],"correct":"D"},{"question":"Trường hợp nào sau đây cơ quan, tổ chức, doanh nghiệp được tự quyết định việc lựa chọn nhà thầu trên cơ sở bảo đảm công khai, minh bạch, hiệu quả và trách nhiệm giải trình?","options":["Thực hiện gói thầu thuộc dự án sử dụng vốn đầu tư công của cơ quan nhà nước","Thực hiện gói thầu thuộc dự án sử dụng vốn đầu tư công của đơn vị sự nghiệp công lập bảo đảm một phần chi thường xuyên","Thực hiện gói thầu thuộc dự án sử dụng vốn ngân sách nhà nước của doanh nghiệp nhà nước","Lựa chọn nhà thầu của doanh nghiệp nhà nước không sử dụng vốn ngân sách nhà nước, đơn vị sự nghiệp công lập tự bảo đảm chi thường xuyên và chi đầu tư, đơn vị sự nghiệp công lập tự bảo đảm chi thường xuyên không sử dụng ngân sách nhà nước"],"correct":"D"},{"question":"Ngôn ngữ sử dụng đối với đấu thầu quốc tế là gì?","options":["Tiếng Việt","Tiếng Đức","Tiếng Anh hoặc tiếng Việt và tiếng Anh","Tiếng Đức hoặc tiếng Anh"],"correct":"C"},{"question":"Đối với đấu thầu quốc tế, trường hợp ngôn ngữ sử dụng trong hồ sơ mời thầu là tiếng Việt và tiếng Anh thì khi tham dự thầu, nhà thầu được sử dụng ngôn ngữ gì?","options":["Chỉ tiếng Việt","Chỉ tiếng Anh","Tiếng Việt hoặc tiếng Anh","Bắt buộc cả tiếng Việt và tiếng Anh"],"correct":"C"},{"question":"Điều kiện để tổ chức đấu thầu quốc tế lựa chọn nhà thầu thực hiện gói thầu mua sắm hàng hóa là gì?","options":["Gói thầu mua sắm hàng hóa thông dụng, đơn giản, có sẵn trên thị trường","Gói thầu mua sắm hàng hóa mà hàng hóa đó trong nước sản xuất được và đáp ứng các yêu cầu về kỹ thuật, chất lượng, giá nhưng chủ đầu tư yêu cầu phải mua hàng hóa nhập khẩu","Gói thầu mua sắm hàng hóa mà hàng hóa đó trong nước không sản xuất được hoặc sản xuất được nhưng không đáp ứng một trong các yêu cầu về kỹ thuật, chất lượng, giá","Gói thầu mua sắm hàng hóa thông dụng đã được nhập khẩu và chào bán tại Việt Nam nhưng hàng hóa đó trong nước không sản xuất được"],"correct":"C"},{"question":"Trong trường hợp hủy thầu, toàn bộ hồ sơ liên quan đến quá trình lựa chọn nhà thầu của gói thầu đó có cần phải lưu trữ không?","options":["Không cần lưu trữ, hủy hồ sơ ngay sau khi quyết định hủy thầu được ban hành nhưng phải đảm bảo thông tin không bị tiết lộ","Không cần lưu trữ, trả lại hồ sơ cho nhà thầu theo nguyên trạng ngay sau khi quyết định hủy thầu được ban hành","Có cần lưu trữ, trong thời hạn 05 năm kể từ ngày quyết định hủy thầu được ban hành","Có cần lưu trữ, trong thời hạn 03 năm kể từ ngày quyết định hủy thầu được ban hành"],"correct":"C"},{"question":"Đối với đấu thầu rộng rãi quốc tế, trường hợp hồ sơ đề xuất về tài chính của nhà thầu không vượt qua bước đánh giá về kỹ thuật, nhà thầu từ chối nhận lại hồ sơ đề xuất của mình thì Chủ đầu tư phải xử lý như thế nào?","options":["Chủ đầu tư xem xét, quyết định việc hủy hồ sơ nhưng phải đảm bảo thông tin không bị tiết lộ","Chủ đầu tư phải lưu trữ theo quy định của pháp luật về lưu trữ","Chủ đầu tư lưu trữ tối thiểu 05 năm","Tất cả các phương án trên đều sai"],"correct":"A"},{"question":"Hồ sơ hoàn công và quyết toán của gói thầu được lưu trữ theo quy định nào?","options":["Quy định nội bộ của nhà thầu","Quy định của tư vấn giám sát","Quy định của pháp luật về lưu trữ","Tất cả phương án trên đều sai"],"correct":"C"},{"question":"Đối với gói thầu xây lắp đấu thầu không qua mạng, hồ sơ đề xuất tài chính của nhà thầu không vượt qua bước đánh giá về kỹ thuật sẽ được trả lại khi nào?","options":["Khi gửi thư mời thương thảo","Khi kết thúc giai đoạn đánh giá kỹ thuật","Khi hoàn trả bảo đảm dự thầu của nhà thầu không được lựa chọn hoặc đăng tải kết quả lựa chọn nhà thầu","Khi ký hợp đồng"],"correct":"C"},{"question":"Đối với đấu thầu quốc tế, hồ sơ mời thầu được phát hành như thế nào?","options":["Hồ sơ mời thầu được phát hành trên Hệ thống mạng đấu thầu quốc gia; Nhà thầu nộp tiền mua bản điện tử hồ sơ mời thầu khi nộp hồ sơ dự thầu","Hồ sơ mời thầu được bán vào giờ hành chính từ thứ 2 tới thứ 6 tại địa chỉ do Chủ đầu tư quy định","Phương án A và B đều đúng","Phương án A và B đều sai"],"correct":"A"},{"question":"Đối với gói thầu sử dụng vốn ngân sách nhà nước, tiền bán bản điện tử hồ sơ mời thầu, hồ sơ yêu cầu sẽ được xử lý như thế nào?","options":["Sử dụng theo quy chế tài chính của chủ đầu tư","Nộp vào ngân sách nhà nước theo quy định của Luật Ngân sách nhà nước","Sử dụng theo cơ chế khoán chi","Tất cả các phương án trên đều sai"],"correct":"B"},{"question":"Chi phí đăng tải quyết định phê duyệt kế hoạch lựa chọn nhà thầu và quyết định phê duyệt kết quả lựa chọn nhà thầu trên Hệ thống mạng đấu thầu quốc gia đối với gói thầu chỉ định thầu là bao nhiêu?","options":["220.000 đồng/1 gói thầu (đã bao gồm thuế giá trị gia tăng)","330.000 đồng/1 gói thầu (đã bao gồm thuế giá trị gia tăng)","Miễn phí","110.000 đồng/1 gói thầu (đã bao gồm thuế giá trị gia tăng)"],"correct":"C"},{"question":"Thành viên tổ chuyên gia thuộc tổ chức tư vấn đấu thầu cần có tối thiểu bao nhiêu năm kinh nghiệm trong lĩnh vực liên quan?","options":["01 năm công tác thuộc một trong các lĩnh vực liên quan đến nội dung pháp lý, kỹ thuật, tài chính của gói thầu","02 năm công tác thuộc một trong các lĩnh vực liên quan đến nội dung pháp lý, kỹ thuật, tài chính của gói thầu","03 năm công tác thuộc một trong các lĩnh vực liên quan đến nội dung pháp lý, kỹ thuật, tài chính của gói thầu","Không có quy định về số năm kinh nghiệm"],"correct":"C"},{"question":"Đơn vị sự nghiệp công lập A đã trúng thầu gói thầu tổ chức lớp đào tạo cán bộ cho UBND tỉnh X sử dụng vốn ngân sách địa phương. Đơn vị sự nghiệp công lập A có phải tổ chức lựa chọn nhà thầu theo Luật Đấu thầu để thuê dịch vụ hậu cần hay không?","options":["Phải lựa chọn nhà thầu theo quy định của Luật Đấu thầu","Căn cứ vào hợp đồng quy định giữa đơn vị A và UBND tỉnh X","Đơn vị A được tự quyết định việc mua sắm trên cơ sở bảo đảm công khai, minh bạch, hiệu quả và trách nhiệm giải trình","Căn cứ theo phân cấp quyết định mua sắm của UBND tỉnh X"],"correct":"C"},{"question":"Sở Y tế tỉnh A được doanh nghiệp trong nước tài trợ 5 tỷ đồng để mua sắm thuốc phục vụ khám chữa bệnh cho người nghèo, hỏi Sở Y tế có phải tổ chức đấu thầu thuốc theo quy định của Luật Đấu thầu không?","options":["Sở Y tế A được tự quyết định việc mua sắm trên cơ sở bảo đảm công khai, minh bạch, hiệu quả và trách nhiệm giải trình trong trường hợp nhà tài trợ yêu cầu không lựa chọn nhà thầu theo quy định của Luật Đấu thầu","Sở Y tế A phải tổ chức lựa chọn nhà thầu theo quy định của Luật Đấu thầu","Trong mọi trường hợp Sở Y tế A không phải thực hiện theo Luật Đấu thầu do đây là nguồn doanh nghiệp trong nước tài trợ","Phải xin ý kiến của UBND tỉnh A để có cơ sở xác định có phải tổ chức lựa chọn nhà thầu theo Luật Đấu thầu hay không"],"correct":"A"},{"question":"Kế hoạch lựa chọn nhà thầu của dự án thuộc đối tượng áp dụng của Luật Đấu thầu bắt buộc phải đăng tải ở đâu?","options":["Hệ thống mạng đấu thầu quốc gia","Báo Tài chính-Đầu tư","Cổng Thông tin điện tử của Bộ, ngành","Phương án A và B đều đúng"],"correct":"A"},{"question":"Chậm nhất là bao nhiêu ngày thì kế hoạch lựa chọn nhà thầu phải được đăng tải trên Hệ thống mạng đấu thầu quốc gia?","options":["05 ngày làm việc kể từ ngày kế hoạch lựa chọn nhà thầu được ban hành","07 ngày kể từ ngày kế hoạch lựa chọn nhà thầu được ban hành","07 ngày làm việc kể từ ngày kế hoạch lựa chọn nhà thầu được ban hành","10 ngày kể từ ngày kế hoạch lựa chọn nhà thầu được ban hành"],"correct":"A"},{"question":"Kế hoạch lựa chọn nhà thầu bao gồm nội dung nào sau đây?","options":["Giá gói thầu","Thời gian thực hiện hợp đồng","Giám sát hoạt động đấu thầu","Cả 3 phương án trên đều đúng"],"correct":"A"},{"question":"Đối với nội dung mua sắm hàng hóa có giá không quá 50 triệu đồng thì được thực hiện như thế nào?","options":["Không phải lập kế hoạch lựa chọn nhà thầu nhưng phải thực hiện mua sắm trên cơ sở tiết kiệm, hiệu quả, bảo đảm đầy đủ hoá đơn, chứng từ","Không phải lập kế hoạch lựa chọn nhà thầu nhưng phải thực hiện mua sắm theo giá công khai, giá niêm yết và không cần hoá đơn, chứng từ","Được hình thành gói thầu để thực hiện lựa chọn nhà thầu theo một trong hình thức lựa chọn nhà thầu nhưng phải lập kế hoạch lựa chọn nhà thầu","Phương án A và C đều đúng"],"correct":"D"},{"question":"Lựa chọn phương án phù hợp nhất đối với nội dung đền bù giải phóng mặt bằng khi lập kế hoạch lựa chọn nhà thầu?","options":["Tất cả nội dung công việc có liên quan đến giải phóng mặt bằng thuộc phần công việc không áp dụng một trong các hình thức lựa chọn nhà thầu","Đối với các công việc mà Hội đồng đền bù giải phóng mặt bằng tự làm thì thuộc phần không áp dụng một trong các hình thức lựa chọn nhà thầu","Đối với phần việc phải hình thành gói thầu thuê tư vấn để thực hiện nhằm phục vụ công việc giải phóng mặt bằng thì thuộc phần công việc thuộc kế hoạch lựa chọn nhà thầu","Phương án B và C đều đúng"],"correct":"D"},{"question":"Đối với các gói thầu đã thanh lý hợp đồng, khi lập tờ trình Kế hoạch lựa chọn nhà thầu, giá trị phần công việc đã thực hiện của các gói thầu này được tính như thế nào?","options":["Giá gói thầu","Giá trị thanh lý hợp đồng","Giá hợp đồng","Tất cả phương án đều đúng"],"correct":"B"},{"question":"Bảo đảm cạnh tranh trong đấu thầu thuộc nội dung đánh giá về?","options":["Tư cách hợp lệ","Năng lực, kinh nghiệm","Kỹ thuật","Tài chính"],"correct":"A"},{"question":"Nhà thầu tham gia đấu thầu gói thầu hàng hóa phải độc lập với chủ thể nào sau đây?","options":["Phải độc lập với nhà thầu tư vấn lập hồ sơ mời thầu gói thầu hàng hóa","Phải độc lập với nhà thầu khác khi tham gia đấu thầu rộng rãi","Phải độc lập với nhà thầu tư vấn lập kế hoạch tổng thể lựa chọn nhà thầu","Phải độc lập với nhà thầu tư vấn lập kế hoạch lựa chọn nhà thầu"],"correct":"A"},{"question":"Nhận định nào sau đây không phù hợp với quy định về bảo đảm cạnh tranh trong đấu thầu?","options":["Nhà thầu tham dự thầu phải độc lập với chủ đầu tư, trừ trường hợp ngoại lệ theo quy định","Nhà thầu tham dự thầu phải độc lập với nhà thầu tư vấn quản lý dự án, tư vấn giám sát","Nhà thầu tham dự thầu phải độc lập với nhà thầu tư vấn lập, thẩm tra, thẩm định hồ sơ thiết kế, dự toán","Nhà thầu thực hiện hợp đồng phải độc lập với nhà thầu tư vấn lập kế hoạch lựa chọn nhà thầu"],"correct":"D"},{"question":"Nội dung nào là nội dung đánh giá tính hợp lệ của hồ sơ dự thầu?","options":["Nhân sự chủ chốt","Hiệu lực của hồ sơ dự thầu","Năng lực tài chính","Việc thực hiện nghĩa vụ kê khai thuế, nộp thuế"],"correct":"B"},{"question":"Đối với đấu thầu không qua mạng, nội dung nào không phải là tiêu chuẩn đánh giá về tính hợp lệ của hồ sơ dự thầu gói thầu tư vấn?","options":["Hiệu lực của hồ sơ đề xuất về kỹ thuật đáp ứng yêu cầu theo quy định trong hồ sơ mời thầu","Có bản gốc hồ sơ đề xuất về kỹ thuật","Bảo đảm dự thầu hợp lệ","Đã thực hiện nghĩa vụ kê khai thuế và nộp thuế"],"correct":"C"},{"question":"Đối với gói thầu mua sắm hàng hóa, xây lắp, phi tư vấn, phương pháp để đánh giá về năng lực và kinh nghiệm là?","options":["Sử dụng tiêu chí đạt, không đạt","Sử dụng phương pháp chấm điểm","Kết hợp cả hai phương pháp: tiêu chí đạt, không đạt và phương pháp chấm điểm","Phương pháp dựa trên kỹ thuật"],"correct":"A"},{"question":"Tiêu chuẩn đánh giá năng lực kinh nghiệm đối với gói thầu mua sắm hàng hóa bao gồm?","options":["Doanh thu bình quân 3 năm gần nhất","Giấy phép bán hàng của nhà sản xuất","Số năm thành lập của doanh nghiệp","Năng lực quản lý của doanh nghiệp"],"correct":"A"},{"question":"Nội dung nào là tiêu chuẩn đánh giá về năng lực và kinh nghiệm không bắt buộc đối với gói thầu mua sắm hàng hóa áp dụng đấu thầu rộng rãi?","options":["Kinh nghiệm thực hiện hợp đồng cung cấp hàng hóa tương tự","Giá trị tài sản ròng của nhà thầu","Doanh thu của nhà thầu","Việc thực hiện nghĩa vụ kê khai thuế, nộp thuế"],"correct":"A"},{"question":"Nội dung nào là tiêu chuẩn đánh giá về năng lực và kinh nghiệm bắt buộc đối với gói thầu xây lắp tổ chức đấu thầu rộng rãi không qua mạng?","options":["Có bản gốc hồ sơ dự thầu","Có tên trong danh sách ngắn","Năng lực tài chính","Có bảo đảm dự thầu hợp lệ"],"correct":"C"},{"question":"Một trong các căn cứ lập hồ sơ mời thầu là?","options":["Báo giá của nhà thầu","Quyết định mua sắm được phê duyệt","Kế hoạch lựa chọn nhà thầu được duyệt","Phương án B và C đều đúng"],"correct":"C"},{"question":"Đối với gói thầu cung cấp dịch vụ tư vấn, phương pháp đánh giá nào không được áp dụng?","options":["Giá thấp nhất","Giá đánh giá","Kết hợp giữa kỹ thuật và giá","Giá cố định"],"correct":"B"},{"question":"Nội dung nào sau đây không thuộc hồ sơ mời thầu?","options":["Chỉ dẫn nhà thầu, tùy chọn mua thêm","Bảng dữ liệu đấu thầu","Phạm vi cung cấp, yêu cầu về kỹ thuật","Biên bản hoàn thiện hợp đồng"],"correct":"D"},{"question":"Trường hợp nào hồ sơ mời thầu được đưa ra yêu cầu về giấy phép bán hàng?","options":["Hàng hóa thông thường, có sẵn trên thị trường","Hàng hóa nhập khẩu","Hàng hóa đặc thù, phức tạp cần gắn với trách nhiệm của nhà sản xuất","Hàng hóa có giá trị lớn"],"correct":"C"},{"question":"Gói thầu nào sau đây thuộc trường hợp được áp dụng chào hàng cạnh tranh?","options":["Tất cả gói thầu mua sắm hàng hoá có giá không quá 10 tỷ đồng","Gói thầu dịch vụ phi tư vấn thông dụng, đơn giản có giá không quá 10 tỷ đồng","Gói thầu dịch vụ tư vấn thông dụng, đơn giản có giá không quá 10 tỷ đồng","Gói thầu xây lắp công trình đơn giản đã có dự toán được phê duyệt có giá không quá 15 tỷ đồng"],"correct":"B"},{"question":"Đối với gói thầu mua sắm hàng hóa thông dụng, sẵn có trên thị trường có giá gói thầu 05 tỷ đồng thì kế hoạch lựa chọn nhà thầu phê duyệt áp dụng hình thức lựa chọn nhà thầu nào sau đây?","options":["Chỉ được áp dụng hình thức chào hàng cạnh tranh","Được áp dụng hình thức chào hàng cạnh tranh hoặc đấu thầu rộng rãi","Bắt buộc áp dụng hình thức chỉ định thầu","Được áp dụng hình thức chỉ định thầu hoặc chào hàng cạnh tranh hoặc đấu thầu rộng rãi"],"correct":"B"},{"question":"Hạn mức chỉ định thầu đối với gói thầu không hình thành dự án thuộc dự toán mua sắm thường xuyên là?","options":["500 triệu đồng","800 triệu đồng","01 tỷ đồng","300 triệu đồng"],"correct":"A"},{"question":"Hạn mức chỉ định thầu đối với gói thầu mua sắm hàng hóa thuộc dự án đầu tư là?","options":["800 triệu đồng","500 triệu đồng","01 tỷ đồng","02 tỷ đồng"],"correct":"D"},{"question":"Phương án nào không phải là một trong các hình thức lựa chọn nhà thầu được phê duyệt trong kế hoạch lựa chọn nhà thầu?","options":["Đấu thầu rộng rãi","Đấu thầu hạn chế","Mua sắm trực tiếp","Đấu thầu qua mạng"],"correct":"D"},{"question":"Gói thầu lựa chọn tư vấn là tổ chức có giá gói thầu là 500 triệu đồng áp dụng hình thức lựa chọn nhà thầu nào?","options":["Bắt buộc áp dụng hình thức chỉ định thầu","Được áp dụng hình thức chỉ định thầu hoặc đấu thầu rộng rãi","Được áp dụng hình thức chào hàng cạnh tranh hoặc đấu thầu rộng rãi","Được áp dụng hình thức chỉ định thầu hoặc đấu thầu rộng rãi hoặc chào hàng cạnh tranh"],"correct":"B"},{"question":"Chọn phương án đúng về hạn mức đối với đấu thầu rộng rãi?","options":["Không quy định hạn mức áp dụng","Giá gói thầu trên 20 tỷ đồng","Giá gói thầu trên 10 tỷ đồng","Giá gói thầu trên 20 tỷ đồng đối với xây lắp, hàng hoá; trên 10 tỷ đồng đối với gói thầu dịch vụ tư vấn, phi tư vấn"],"correct":"A"},{"question":"Chọn phương án đúng về loại gói thầu đối với hình thức mua sắm trực tiếp?","options":["Chỉ gói thầu mua sắm hàng hoá","Chỉ gói thầu xây lắp","Chỉ gói thầu dịch vụ phi tư vấn","Gói thầu mua sắm hàng hóa và dịch vụ phi tư vấn"],"correct":"A"},{"question":"Phương án nào không phải là điều kiện để được áp dụng hình thức mua sắm trực tiếp?","options":["Nhà thầu đã trúng thầu thông qua đấu thầu rộng rãi, đấu thầu hạn chế và đã ký hợp đồng gói thầu thực hiện gói thầu trước đó","Thời gian từ khi ký hợp đồng gói thầu trước đến ngày phê duyệt kết quả mua sắm trực tiếp không quá 12 tháng","Đơn giá các phần việc thuộc gói thầu mua sắm trực tiếp không vượt đơn giá phần việc tương ứng của gói thầu đã ký trước đó","Chủ đầu tư được áp dụng mua sắm trực tiếp nhiều lần đối với các loại hàng hóa thuộc gói thầu"],"correct":"D"},{"question":"Hãy chọn phương án đúng về hình thức đặt hàng?","options":["Là một trong các hình thức lựa chọn nhà thầu","Pháp luật quản lý ngành, lĩnh vực quy định về quy trình, thủ tục đặt hàng khác với quy trình, thủ tục của pháp luật về đấu thầu thì áp dụng quy định của pháp luật về đấu thầu","Đặt hàng chỉ được áp dụng cho sản phẩm, dịch vụ công","Đặt hàng chỉ áp dụng đối với nguồn chi thường xuyên ngân sách nhà nước, không được áp dụng đối với nguồn vốn khác"],"correct":"A"},{"question":"Kế hoạch lựa chọn nhà thầu của dự án thuộc đối tượng áp dụng của Luật Đấu thầu bắt buộc phải đăng tải ở đâu?","options":["Hệ thống mạng đấu thầu quốc gia","Báo Tài chính-Đầu tư","Cổng Thông tin điện tử của Bộ, ngành","Phương án A và B đều đúng"],"correct":"A"},{"question":"Thẩm quyền phê duyệt kế hoạch tổng thể lựa chọn nhà thầu thuộc chủ thể nào?","options":["Người có thẩm quyền","Chủ đầu tư (trường hợp xác định được chủ đầu tư)","Người đứng đầu cơ quan được giao chuẩn bị dự án","Bên mời thầu"],"correct":"A"},{"question":"Nhiệm vụ nào sau đây không thuộc trách nhiệm của người có thẩm quyền?","options":["Phê duyệt kế hoạch lựa chọn nhà thầu","Giải quyết kiến nghị và xử lý các vi phạm pháp luật về đấu thầu","Quyết định việc hủy thầu khi thay đổi mục tiêu đầu tư trong quyết định đầu tư","Quyết định việc hủy thầu, đình chỉ cuộc đấu thầu, không công nhận kết quả lựa chọn nhà thầu khi phát hiện có hành vi vi phạm pháp luật về đấu thầu"],"correct":"A"},{"question":"Trường hợp nào sau đây việc phê duyệt kế hoạch lựa chọn nhà thầu thuộc trách nhiệm của chủ đầu tư?","options":["Chủ đầu tư không có trách nhiệm phê duyệt kế hoạch lựa chọn nhà thầu","Chủ đầu tư có trách nhiệm phê duyệt kế hoạch lựa chọn nhà thầu, trừ trường hợp chưa xác định được chủ đầu tư theo quy định của pháp luật","Trường hợp gói thầu được thực hiện trước khi có quyết định phê duyệt dự án và chưa xác định được chủ đầu tư","Chủ đầu tư chỉ được phê duyệt kế hoạch lựa chọn nhà thầu trong trường hợp được người có thẩm quyền ủy quyền"],"correct":"B"},{"question":"Việc chấp thuận hoặc không chấp thuận việc điều chuyển khối lượng, phạm vi công việc của nhà thầu phụ cho tổ chức, đơn vị khác khi cần đáp ứng yêu cầu về tiến độ, chất lượng gói thầu do nhà thầu đề xuất thuộc trách nhiệm của ai?","options":["Tổ chuyên gia","Chủ đầu tư","Người có thẩm quyền","Tổ thẩm định"],"correct":"B"},{"question":"Nội dung nào không thuộc nội dung quản lý nhà nước đối với hoạt động đấu thầu?","options":["Quản lý hệ thống thông tin và cơ sở dữ liệu về đấu thầu trên phạm vi cả nước","Lập hồ sơ mời quan tâm, hồ sơ mời sơ tuyển, hồ sơ mời thầu, hồ sơ yêu cầu","Đào tạo, bồi dưỡng kiến thức, nghiệp vụ chuyên môn về đấu thầu","Hợp tác quốc tế về đấu thầu"],"correct":"B"},{"question":"Theo quy định pháp luật về đấu thầu, kiểm tra hoạt động đấu thầu được tiến hành theo hình thức nào?","options":["Kiểm tra trực tiếp","Báo cáo bằng văn bản","Kết hợp giữa kiểm tra trực tiếp và báo cáo bằng văn bản","Kiểm tra định kỳ hoặc đột xuất"],"correct":"D"},{"question":"Thời hiệu áp dụng biện pháp cấm tham gia hoạt động đấu thầu là bao lâu?","options":["10 năm tính từ ngày xảy ra hành vi vi phạm","10 năm tính từ ngày phát hiện ra hành vi vi phạm","05 năm tính từ ngày phát hiện ra hành vi vi phạm","05 năm tính từ ngày xảy ra hành vi vi phạm"],"correct":"A"},{"question":"Chủ thể nào không có quyền cấm tham gia hoạt động đấu thầu?","options":["Người có thẩm quyền","Chủ đầu tư","Bộ trưởng, Thủ trưởng cơ quan ngang Bộ, cơ quan thuộc Chính phủ, cơ quan khác ở Trung ương","Chủ tịch Ủy ban nhân dân cấp tỉnh"],"correct":"B"},{"question":"Người có thẩm quyền ban hành quyết định cấm tham gia hoạt động đấu thầu với thời gian cấm bao lâu đối với trường hợp tổ chức, cá nhân có từ 02 hành vi vi phạm trở lên thuộc cùng phạm vi quản lý?","options":["Bằng tổng thời gian cấm của các hành vi vi phạm nhưng tối thiểu trên 05 năm","Bằng tổng thời gian cấm của các hành vi vi phạm nhưng tối đa không quá 03 năm","Bằng tổng thời gian cấm của các hành vi vi phạm nhưng tối đa không quá 05 năm","Bằng thời gian cấm của hành vi vi phạm có thời gian bị cấm cao nhất"],"correct":"C"},{"question":"Hành vi gian lận trong hoạt động đấu thầu sẽ bị cấm tham gia hoạt động đấu thầu trong thời gian bao lâu?","options":["Từ 06 tháng đến 01 năm","02 năm","Từ 01 năm đến 02 năm","Từ 03 năm đến 05 năm"],"correct":"D"},{"question":"Hành vi cản trở trong hoạt động đấu thầu sẽ bị cấm tham gia hoạt động đấu thầu trong thời gian bao lâu?","options":["06 tháng","Từ 06 tháng đến dưới 1 năm","Từ 01 năm đến 03 năm","05 năm"],"correct":"C"},{"question":"Thành viên A trong nhà thầu liên danh A-B thực hiện hành vi làm giả hoặc làm sai lệch thông tin, hồ sơ, tài liệu trong đấu thầu thì việc cấm tham gia hoạt động đấu thầu được xử lý như thế nào?","options":["Cấm tham gia hoạt động đấu thầu từ 03 năm đến 05 năm đối với thành viên A","Cấm tham gia hoạt động đấu thầu từ 01 năm đến dưới 03 năm đối với thành viên A","Cấm tham gia hoạt động đấu thầu từ 03 năm đến 05 năm đối với tất cả thành viên trong nhà thầu liên danh A-B","Cấm tham gia hoạt động đấu thầu từ 01 năm đến 03 năm đối với tất cả thành viên trong nhà thầu liên danh A-B"],"correct":"A"},{"question":"Đình chỉ cuộc thầu được thực hiện trong thời gian nào?","options":["Từ ngày phát hành hồ sơ mời sơ tuyển đến trước khi ký kết hợp đồng","Trong quá trình tổ chức lựa chọn nhà thầu cho đến trước khi phê duyệt kết quả lựa chọn nhà thầu","Sau khi phê duyệt kết quả lựa chọn nhà thầu đến khi ký kết hợp đồng","Trong quá trình thực hiện hợp đồng"],"correct":"B"},{"question":"Biện pháp nào sau đây được thực hiện trong quá trình thực hiện hợp đồng?","options":["Hủy thầu","Đình chỉ cuộc thầu","Không công nhận kết quả lựa chọn nhà thầu","Phương án A và B đều đúng"],"correct":"C"},{"question":"Nhà thầu tư vấn giám sát đồng thời thực hiện tư vấn kiểm định đối với gói thầu do nhà thầu đó giám sát thì nhà thầu đó sẽ bị xử lý như thế nào?","options":["Bị cấm tham gia hoạt động đấu thầu từ 01 năm đến 03 năm và khi tham dự thầu phải thực hiện biện pháp bảo đảm dự thầu với giá trị gấp 03 lần giá trị yêu cầu trong thời hạn 02 năm","Khi tham dự thầu phải thực hiện biện pháp bảo đảm dự thầu với giá trị gấp 03 lần giá trị yêu cầu trong thời hạn 02 năm","Bị cấm tham gia hoạt động đấu thầu từ 01 năm đến 03 năm","Không bị xử lý vi phạm"],"correct":"C"},{"question":"Tham gia lập, đồng thời tham gia thẩm định hồ sơ mời thầu đối với cùng một gói thầu sẽ bị cấm tham gia hoạt động đấu thầu trong thời gian bao lâu?","options":["02 năm","Từ trên 02 năm đến 03 năm","Từ trên 01 năm đến 02 năm","Từ 06 tháng đến 01 năm"],"correct":"D"},{"question":"Nhà thầu liên danh A-B gồm 2 thành viên. Nhà thầu A làm giả thông tin về hợp đồng tương tự để tham dự thầu sẽ bị xử lý như thế nào?","options":["Thành viên liên danh A bị cấm tham gia hoạt động đấu thầu từ 03 năm đến 05 năm","Tất cả thành viên trong liên danh A-B bị cấm tham gia hoạt động đấu thầu từ 03 năm đến 05 năm","Thành viên liên danh A bị cấm tham gia hoạt động đấu thầu từ 01 năm đến 03 năm","Tất cả thành viên trong liên danh A-B bị cấm tham gia hoạt động đấu thầu từ 01 năm đến 03 năm"],"correct":"A"},{"question":"Nhà thầu liên danh A-B. Nhà thầu A dàn xếp, thỏa thuận với các bên rút hồ sơ dự thầu để liên danh A-B trúng thầu sẽ bị xử lý như thế nào?","options":["Thành viên liên danh A bị cấm tham gia hoạt động đấu thầu từ 03 năm đến 05 năm","Tất cả thành viên trong liên danh A-B bị cấm tham gia hoạt động đấu thầu từ 03 năm đến 05 năm","Thành viên liên danh A bị cấm tham gia hoạt động đấu thầu từ 01 năm đến 03 năm","Tất cả thành viên trong liên danh A-B bị cấm tham gia hoạt động đấu thầu từ 01 năm đến 03 năm"],"correct":"B"},{"question":"Trường hợp nhà thầu bị đánh giá về uy tín khi thực hiện hành vi: được lựa chọn trúng thầu nhưng không tiến hành hoặc từ chối tiến hành hoàn thiện hợp đồng hoặc không ký kết hợp đồng thì khi tham gia gói thầu khác, nhà thầu sẽ bị bất lợi như thế nào?","options":["Đối với gói thầu hàng hóa, xây lắp, phi tư vấn, hỗn hợp, nhà thầu bị đánh giá về uy tín phải nộp gấp 3 lần bảo đảm dự thầu trong vòng 03 năm kể từ lần cuối cùng thực hiện hành vi","Đối với gói thầu tư vấn, thông tin uy tín này sẽ được sử dụng để đánh giá về kỹ thuật","Bị đưa vào xem xét, đánh giá về kỹ thuật trong quá trình lựa chọn nhà thầu đối với gói thầu xây lắp, phi tư vấn, hàng hóa, hỗn hợp","Đáp án B và C đều đúng"],"correct":"B"},{"question":"Trong gói thầu dịch vụ tư vấn, thông tin về uy tín của nhà thầu được sử dụng để?","options":["Đánh giá về năng lực, kinh nghiệm","Đánh giá tư cách hợp lệ của nhà thầu","Đánh giá về kỹ thuật","Loại nhà thầu đã bị đánh giá về uy tín"],"correct":"C"},{"question":"Đối với việc giải quyết kiến nghị về các vấn đề trước khi có thông báo kết quả lựa chọn nhà thầu, cá nhân, đơn vị nào sau đây có trách nhiệm giải quyết kiến nghị?","options":["Chủ đầu tư, người có thẩm quyền","Chủ đầu tư, Hội đồng giải quyết kiến nghị","Người có thẩm quyền, Hội đồng giải quyết kiến nghị","Chủ đầu tư, tổ chuyên gia"],"correct":"A"},{"question":"Đối với việc giải quyết kiến nghị về kết quả lựa chọn nhà thầu, cá nhân, đơn vị nào sau đây có trách nhiệm giải quyết kiến nghị?","options":["Chủ đầu tư, người có thẩm quyền","Chủ đầu tư, Hội đồng giải quyết kiến nghị","Người có thẩm quyền, Hội đồng giải quyết kiến nghị","Chủ đầu tư, Hội đồng tư vấn giải quyết kiến nghị"],"correct":"B"},{"question":"Trường hợp đang trong quá trình giải quyết kiến nghị mà nhà thầu gửi đơn khiếu nại thì việc giải quyết kiến nghị được xử lý thế nào?","options":["Tiếp tục giải quyết kiến nghị","Chấm dứt ngay việc giải quyết kiến nghị","Tạm dừng việc giải quyết kiến nghị đến khi có kết quả giải quyết khiếu nại","Tất cả phương án trên đều sai"],"correct":"B"},{"question":"Chi phí giải quyết kiến nghị được nhà thầu nộp cho chủ thể nào sau đây?","options":["Chủ tịch Hội đồng tư vấn giải quyết kiến nghị","Bộ phận thường trực giúp việc cho Chủ tịch Hội đồng giải quyết kiến nghị","Chủ đầu tư","Người có thẩm quyền"],"correct":"B"},{"question":"Trường hợp nào sau đây nhà thầu không được hoàn trả chi phí giải quyết kiến nghị?","options":["Kiến nghị của nhà thầu được kết luận là đúng","Một hoặc các nội dung kiến nghị của nhà thầu được kết luận là không đúng","Nhà thầu rút đơn kiến nghị trong quá trình giải quyết kiến nghị","Phương án B và C đều đúng"],"correct":"D"},{"question":"Đối với kiến nghị về kết quả lựa chọn nhà thầu, Hội đồng giải quyết kiến nghị phải có văn bản giải quyết kiến nghị trong thời hạn bao nhiêu ngày kể từ ngày Hội đồng được thành lập?","options":["25 ngày","30 ngày","35 ngày","20 ngày"],"correct":"B"},{"question":"Hội đồng giải quyết kiến nghị có quyền thực hiện việc nào sau đây?","options":["Hủy thầu","Yêu cầu chủ đầu tư tạm dừng ký kết hợp đồng","Yêu cầu nhà thầu, chủ đầu tư và các cơ quan liên quan cung cấp thông tin của gói thầu, dự án và các thông tin liên quan khác để thực hiện nhiệm vụ","Không công nhận kết quả lựa chọn nhà thầu"],"correct":"C"},{"question":"Gói thầu mua thuốc áp dụng phương thức một giai đoạn hai túi hồ sơ có giá gói thầu 100 tỷ đồng. Nhà thầu X không đạt về kỹ thuật có kiến nghị về kết quả lựa chọn nhà thầu gửi Hội đồng giải quyết kiến nghị (trong đơn kiến nghị nhà thầu nêu giá dự thầu của mình là 90 tỷ đồng). Chi phí giải quyết kiến nghị nhà thầu X phải nộp là?","options":["Nhà thầu X phải nộp 25 triệu đồng","Nhà thầu X phải nộp 22,5 triệu đồng","Nhà thầu X phải nộp 20 triệu đồng","Nhà thầu X phải nộp 15 triệu đồng"],"correct":"A"},{"question":"Hợp đồng theo tỷ lệ phần trăm có thể được áp dụng đối với gói thầu nào sau đây?","options":["Mua sắm thiết bị y tế","Xây dựng công trình","Bảo hiểm công trình mà giá trị hợp đồng được xác định chính xác trên cơ sở giá trị công trình thực tế được nghiệm thu","Tư vấn giám sát"],"correct":"C"},{"question":"Cơ sở để thanh toán hợp đồng cho nhà thầu là gì?","options":["Giá hợp đồng và các điều khoản cụ thể về thanh toán được ghi trong hợp đồng","Dự toán gói thầu và các điều khoản cụ thể về thanh toán được ghi trong hợp đồng","Dự toán gói thầu","Phương án A và C đều sai"],"correct":"A"},{"question":"Nhà thầu không được hoàn trả bảo đảm thực hiện hợp đồng trong trường hợp nào?","options":["Từ chối thực hiện hợp đồng khi hợp đồng đã có hiệu lực","Thực hiện hợp đồng chậm tiến độ nhưng vẫn hoàn thành hợp đồng","Nhà thầu đề nghị điều chỉnh tiến độ do bất khả kháng","Nhà thầu đề xuất thay đổi nhà thầu phụ"],"correct":"A"},{"question":"Trường hợp nào sau đây phải áp dụng bảo đảm thực hiện hợp đồng?","options":["Nhà thầu cung dịch vụ phi tư vấn","Nhà thầu thực hiện gói thầu có giá gói thầu thuộc hạn mức chỉ định thầu","Nhà thầu cung cấp dịch vụ tư vấn","Nhà thầu được lựa chọn theo hình thức tự thực hiện"],"correct":"A"},{"question":"Hồ sơ hợp đồng bao gồm các tài liệu nào sau đây?","options":["Văn bản hợp đồng","Phụ lục hợp đồng gồm danh mục chi tiết về phạm vi công việc, biểu giá, tiến độ thực hiện (nếu có)","Quyết định phê duyệt kết quả lựa chọn nhà thầu","Tất cả các phương án trên"],"correct":"D"},{"question":"Chủ đầu tư A và nhà thầu B đã ký kết hợp đồng cung cấp 11000 đơn vị hàng hóa, loại hợp đồng theo đơn giá cố định. Trong quá trình thực hiện hợp đồng, nhu cầu sử dụng thực tế mà nhà thầu phải cung cấp cho chủ đầu tư chỉ là 10500 đơn vị hàng hóa. Hãy lựa chọn phương án đúng về sửa đổi hợp đồng trong trường hợp này?","options":["Chủ đầu tư A và nhà thầu B bắt buộc phải thực hiện thủ tục sửa đổi hợp đồng, phải ký kết văn bản sửa đổi hợp đồng","Chủ đầu tư A và nhà thầu B không cần thực hiện thủ tục sửa đổi hợp đồng, không phải ký kết văn bản sửa đổi hợp đồng","Chủ đầu tư A và nhà thầu B bắt buộc phải thực hiện thủ tục ký phụ lục hợp đồng để điều chỉnh khối lượng","Phương án A và C đều đúng"],"correct":"B"},{"question":"Phát hành hồ sơ mời quan tâm, hồ sơ mời sơ tuyển, hồ sơ mời thầu được thực hiện như thế nào?","options":["Hồ sơ mời quan tâm, hồ sơ mời sơ tuyển, hồ sơ mời thầu được phát hành sau 01 ngày kể từ khi thông báo được đăng tải thành công trên Hệ thống mạng đấu thầu quốc gia","Hồ sơ mời quan tâm, hồ sơ mời sơ tuyển, hồ sơ mời thầu được phát hành trước khi đăng tải thông báo mời quan tâm, thông báo mời sơ tuyển, thông báo mời thầu","Hồ sơ mời quan tâm, hồ sơ mời sơ tuyển, hồ sơ mời thầu được phát hành sau 03 ngày kể từ khi thông báo được đăng tải thành công trên Hệ thống mạng đấu thầu quốc gia","Hồ sơ mời quan tâm, hồ sơ mời sơ tuyển, hồ sơ mời thầu được phát hành ngay sau khi đăng tải thành công thông báo mời quan tâm, thông báo mời sơ tuyển, thông báo mời thầu"],"correct":"D"},{"question":"Hãy chọn phương án đúng về đấu thầu trước?","options":["Đấu thầu trước là việc thực hiện trước một số thủ tục trước khi dự án được phê duyệt đầu tư nhằm mục đích đẩy nhanh tiến độ thực hiện dự án, trừ gói thầu cần thực hiện trước khi phê duyệt dự án","Đấu thầu trước là việc thực hiện các gói thầu thuộc giai đoạn chuẩn bị đầu tư","Đấu thầu trước là việc lựa chọn nhà thầu không cần phê duyệt kế hoạch lựa chọn nhà thầu để đẩy nhanh tiến độ thực hiện","Đấu thầu trước là việc thực hiện trước một số thủ tục trước khi dự án, dự toán mua sắm được phê duyệt nhằm mục đích đẩy nhanh tiến độ thực hiện dự án, dự toán mua sắm, trừ gói thầu cần thực hiện trước khi phê duyệt dự án"],"correct":"A"},{"question":"Quy trình, thủ tục lựa chọn nhà thầu đối với mua sắm trực tiếp không bao gồm bước nào sau đây?","options":["Thẩm định hồ sơ yêu cầu","Đánh giá hồ sơ đề xuất và thương thảo về các đề xuất của nhà thầu","Phát hành hồ sơ yêu cầu","Phê duyệt và công khai kết quả mua sắm trực tiếp"],"correct":"A"},{"question":"Quy trình, thủ tục lựa chọn nhà thầu đối với chào hàng cạnh tranh không bao gồm bước nào sau đây?","options":["Phê duyệt kết quả lựa chọn nhà thầu","Công khai kết quả lựa chọn nhà thầu","Thẩm định kết quả lựa chọn nhà thầu","Hoàn thiện, ký kết và quản lý thực hiện hợp đồng"],"correct":"C"},{"question":"Thời gian phê duyệt hồ sơ mời thầu được quy định như thế nào?","options":["Do chủ đầu tư quyết định trên cơ sở bảo đảm tiến độ của dự án, gói thầu","Tối đa là 05 ngày làm việc kể từ ngày tổ chuyên gia trình dự thảo hồ sơ mời thầu trong trường hợp không thẩm định hồ sơ mời thầu","Tối đa là 05 ngày làm việc kể từ ngày tổ thẩm định gửi báo cáo thẩm định hồ sơ mời thầu","Phương án B và C đều đúng"],"correct":"A"},{"question":"Thời gian phê duyệt kết quả lựa chọn nhà thầu được quy định như thế nào?","options":["Do chủ đầu tư quyết định trên cơ sở bảo đảm tiến độ của dự án, gói thầu","Tối đa là 05 ngày làm việc kể từ ngày tổ chuyên gia trình báo cáo đánh giá hồ sơ dự thầu trong trường hợp không thẩm định kết quả lựa chọn nhà thầu","Tối đa là 05 ngày làm việc kể từ ngày tổ thẩm định trình báo cáo thẩm định kết quả lựa chọn nhà thầu","Phương án B và C đều đúng"],"correct":"A"},{"question":"Thời gian đánh giá hồ sơ dự thầu được quy định như thế nào?","options":["Tối đa không quá 45 ngày đối với đấu thầu trong nước và không quá 60 ngày đối với đấu thầu quốc tế","Tối đa không quá 30 ngày đối với đấu thầu trong nước và không quá 60 ngày đối với đấu thầu quốc tế","Do người có thẩm quyền, chủ đầu tư có trách nhiệm quyết định","Do chủ đầu tư quyết định trên cơ sở bảo đảm tiến độ của dự án, gói thầu"],"correct":"D"},{"question":"Quy trình, thủ tục lựa chọn nhà thầu đối với chỉ định thầu theo quy trình rút gọn bao gồm các bước nào sau đây?","options":["Chuẩn bị và gửi dự thảo hợp đồng cho nhà thầu; thương thảo, hoàn thiện hợp đồng; trình, thẩm định, phê duyệt và công khai kết quả lựa chọn nhà thầu; ký kết hợp đồng","Chuẩn bị và gửi dự thảo hợp đồng cho nhà thầu; thương thảo hợp đồng; trình, thẩm định, phê duyệt kết quả lựa chọn nhà thầu; ký kết và quản lý thực hiện hợp đồng","Chuẩn bị và gửi dự thảo hợp đồng cho nhà thầu; hoàn thiện hợp đồng, phê duyệt và công khai kết quả lựa chọn nhà thầu; ký kết và quản lý thực hiện hợp đồng","Lập, phê duyệt hồ sơ yêu cầu; xác định nhà thầu dự kiến được mời nhận hồ sơ yêu cầu; đánh giá hồ sơ đề xuất và thương thảo về các đề xuất của nhà thầu; phê duyệt và công khai kết quả lựa chọn nhà thầu; hoàn thiện, ký kết và quản lý thực hiện hợp đồng"],"correct":"C"},{"question":"Danh mục hàng hóa, dịch vụ áp dụng mua sắm tập trung do Bộ trưởng Bộ Y tế ban hành:","options":["Danh mục mua sắm tập trung cấp quốc gia đối với ô tô trong trường hợp cần thiết","Danh mục mua sắm tập trung cấp quốc gia đối với thuốc; danh mục mua sắm tập trung cấp quốc gia đối với thiết bị công nghệ thông tin trong trường hợp cần thiết","Danh mục mua sắm tập trung cấp quốc gia đối với thuốc; danh mục mua sắm tập trung cấp quốc gia đối với dịch vụ đơn giản trong trường hợp cần thiết","Danh mục mua sắm tập trung cấp quốc gia đối với thuốc; danh mục mua sắm tập trung cấp quốc gia đối với thiết bị y tế, vật tư xét nghiệm trong trường hợp cần thiết"],"correct":"D"},{"question":"Hình thức lựa chọn nhà thầu khi áp dụng mua sắm tập trung bảo hiểm tài sản cho các cơ quan thuộc tỉnh Y","options":["Đấu thầu rộng rãi","Đấu thầu hạn chế","Đàm phán giá","Đấu thầu rộng rãi và đàm phán giá"],"correct":"A"},{"question":"Đơn vị mua sắm tập trung:","options":["Thực hiện việc lựa chọn nhà thầu trên cơ sở nhiệm vụ được giao","Thực hiện việc lựa chọn nhà thầu trên cơ sở hợp đồng ký với các đơn vị có nhu cầu","Không được thực hiện việc lựa chọn nhà thầu","Phương án A và B đều đúng"],"correct":"D"},{"question":"Thời hạn của thỏa thuận khung:","options":["Thời hạn áp dụng thỏa thuận khung được quy định là 40 tháng","Thời hạn áp dụng thỏa thuận khung được quy định trong kế hoạch lựa chọn nhà thầu nhưng không quá 36 tháng","Thời hạn áp dụng thỏa thuận khung do người có thẩm quyền quyết định trong kế hoạch lựa chọn nhà thầu","Phương án B và C đều đúng"],"correct":"B"},{"question":"Tại bước hoàn thiện, ký kết và thực hiện hợp đồng với nhà thầu đối với gói thầu mua sắm tập trung:","options":["Nhà thầu đã ký kết thỏa thuận khung phải thực hiện biện pháp bảo đảm thực hiện hợp đồng trước hoặc cùng thời điểm hợp đồng có hiệu lực cho đơn vị mua sắm tập trung","Nhà thầu đã ký kết thỏa thuận khung phải thực hiện biện pháp bảo đảm thực hiện hợp đồng trước hoặc cùng thời điểm hợp đồng có hiệu lực cho đơn vị có nhu cầu mua sắm","Nhà thầu đã ký kết thỏa thuận khung không phải thực hiện biện pháp bảo đảm thực hiện hợp đồng trước thời điểm hợp đồng có hiệu lực cho đơn vị có nhu cầu mua sắm","Nhà thầu đã ký kết thỏa thuận khung phải thực hiện biện pháp bảo đảm thực hiện hợp đồng sau thời điểm hợp đồng có hiệu lực cho đơn vị mua sắm tập trung"],"correct":"B"},{"question":"Đối với các gói thầu mua sắm tập trung, trách nhiệm cung cấp thông tin về kết quả thực hiện hợp đồng của nhà thầu do ai thực hiện?","options":["Đơn vị có nhu cầu mua sắm","Bên mời thầu","Đơn vị tư vấn được thuê làm bên mời thầu","Không phải đăng tải thông tin"],"correct":"A"},{"question":"Áp dụng hình thức lựa chọn nhà thầu nào khi mua sắm tập trung đối với gói thầu điều hòa không khí thông dụng, sẵn có trên thị trường, có giá gói thầu là 03 tỷ đồng cho các cơ quan thuộc tỉnh X?","options":["Đấu thầu rộng rãi hoặc mua sắm trực tiếp","Đấu thầu rộng rãi hoặc chỉ định thầu theo hạn mức","Đấu thầu rộng rãi hoặc chào hàng cạnh tranh","Đấu thầu rộng rãi hoặc chỉ định thầu hoặc đám phán giá"],"correct":"C"},{"question":"Trách nhiệm trong mua sắm tập trung?","options":["Đơn vị mua sắm tập trung thực hiện trách nhiệm của người có thẩm quyền theo quy định của Luật Đấu thầu","Đơn vị mua sắm tập trung thực hiện trách nhiệm của chủ đầu tư theo quy định của Luật Đấu thầu","Đơn vị mua sắm tập trung thực hiện trách nhiệm của bên mời thầu theo quy định của Luật Đấu thầu","Đơn vị mua sắm tập trung thực hiện trách nhiệm của tổ chuyên gia theo quy định của Luật Đấu thầu"],"correct":"B"},{"question":"Nhà thầu đã ký thỏa thuận khung và được đơn vị có nhu cầu mua sắm yêu cầu ký hợp đồng nhưng không ký hợp đồng, không thực hiện biện pháp bảo đảm thực hiện hợp đồng sẽ bị xử lý như thế nào?","options":["Nhà thầu sẽ bị khóa tài khoản trên Hệ thống mạng đấu thầu quốc gia trong thời hạn 06 tháng kể từ ngày đơn vị có nhu cầu mua sắm công khai tên nhà thầu trên Hệ thống","Nhà thầu sẽ bị khóa tài khoản trên Hệ thống mạng đấu thầu quốc gia trong thời hạn 06 tháng kể từ ngày đơn vị mua sắm tập trung công khai tên nhà thầu trên Hệ thống, trừ trường hợp bất khả kháng","Nhà thầu sẽ bị khóa tài khoản trên Hệ thống mạng đấu thầu quốc gia trong thời hạn 03 tháng kể từ ngày Bộ Tài chính nhận được văn bản đề nghị của đơn vị có nhu cầu mua sắm, trừ trường hợp bất khả kháng","Nhà thầu sẽ bị khóa tài khoản trên Hệ thống mạng đấu thầu quốc gia trong thời hạn 06 tháng kể từ ngày Bộ Tài chính nhận được văn bản đề nghị của đơn vị có nhu cầu mua sắm, trừ trường hợp bất khả kháng"],"correct":"B"},{"question":"Nhận định nào sau đây là đúng về văn bản điện tử trên Hệ thống mạng đấu thầu quốc gia?","options":["Văn bản điện tử trên Hệ thống có giá trị theo quy định của pháp luật về giao dịch điện tử, làm cơ sở đối chiếu, so sánh, xác thực thông tin phục vụ công tác đánh giá, thẩm định, thanh tra, kiểm tra, kiểm toán và giải ngân","Thời điểm gửi, nhận văn bản điện tử được xác định căn cứ theo thời gian thực ghi lại trên Hệ thống","Khi gửi hồ sơ thanh quyết toán đến Kho bạc Nhà nước, nhà thầu không phải cung cấp thông tin, tài liệu cho Kho bạc Nhà nước đối với các thông tin, tài liệu là văn bản điện tử trên Hệ thống","Cả 3 phương án trên đều đúng"],"correct":"D"},{"question":"Tài khoản nghiệp vụ trên Hệ thống mạng đấu thầu quốc gia là gì?","options":["Tài khoản do người sử dụng đăng ký và được phê duyệt trên Hệ thống mạng đấu thầu quốc gia","Tài khoản do Trung tâm Đấu thầu qua mạng quốc gia cấp phép theo quy định","Tài khoản do Tài khoản tham gia hệ thống tạo ra","Phương án A và B đều đúng"],"correct":"C"},{"question":"Nhà thầu có trách nhiệm kê khai thông tin nào trên Hệ thống mạng đấu thầu quốc gia?","options":["Thông tin về uy tín của nhà thầu trong việc tham dự thầu","Thông tin về vi phạm của nhà thầu","Thông tin về năng lực, kinh nghiệm của nhà thầu","Cả 3 phương án trên đều đúng"],"correct":"C"},{"question":"Ai chịu trách nhiệm đăng tải thông tin chủ yếu của hợp đồng trên Hệ thống mạng đấu thầu quốc gia?","options":["Bên mời thầu","Tổ chuyên gia","Tư vấn đấu thầu","Chủ đầu tư"],"correct":"D"},{"question":"Trong đấu thầu qua mạng, nhà thầu tư vấn đấu thầu bị khoá tài khoản trong vòng 06 tháng khi thực hiện hành vi nào sau đây?","options":["Tham gia vào quá trình lập và đánh giá E-HSMT","Tham gia vào quá trình thẩm định hồ sơ mời thầu và kết quả lựa chọn nhà thầu","Thay chủ đầu tư đăng tải các nội dung thuộc trách nhiệm đăng tải của chủ đầu tư","Đăng tải thông tin về năng lực, kinh nghiệm của mình trên Hệ thống mạng đấu thầu quốc gia"],"correct":"C"},{"question":"Chủ đầu tư có trách nhiệm đăng tải thông tin chủ yếu của hợp đồng trên Hệ thống đấu thầu qua mạng quốc gia chậm nhất là?","options":["05 ngày làm việc kể từ ngày ký kết hợp đồng","05 ngày làm việc kể từ ngày hợp đồng có hiệu lực","05 ngày kể từ ngày hợp đồng có hiệu lực","05 ngày làm việc kể từ ngày nhà thầu nộp bảo đảm thực hiện hợp đồng"],"correct":"B"},{"question":"Chủ đầu tư phải gửi thông báo mời tham gia chào giá trực tuyến theo quy trình thông thường đến các nhà thầu đáp ứng yêu cầu kỹ thuật trong thời hạn tối thiểu bao lâu trước thời điểm bắt đầu chào giá?","options":["24 giờ","03 ngày làm việc","05 ngày","05 ngày làm việc"],"correct":"B"},{"question":"Đối với đấu thầu qua mạng, quy định về việc mở thầu và công khai biên bản mở thầu trên Hệ thống mạng đấu thầu quốc gia là đúng?","options":["Hệ thống tự động mở thầu và công khai biên bản mở thầu trong thời hạn không quá 02 giờ kể từ thời điểm đóng thầu","Chủ đầu tư phải mở thầu và công khai biên bản mở thầu trên Hệ thống trong thời hạn không quá 04 giờ kể từ thời điểm đóng thầu","Tổ chuyên gia phải mở thầu và công khai biên bản mở thầu trên Hệ thống trong thời hạn không quá 02 giờ kể từ thời điểm đóng thầu","Chủ đầu tư phải mở thầu và công khai biên bản mở thầu trên Hệ thống trong thời hạn không quá 02 giờ kể từ thời điểm đóng thầu"],"correct":"D"},{"question":"Đối với đấu thầu qua mạng, sau thời điểm đóng thầu, nhận định nào sau đây là đúng?","options":["Nhà thầu có thể thay đổi nội dung E-HSDT nếu phát hiện sai sót","Nhà thầu có thể tự làm rõ E-HSDT trên Hệ thống","Nhà thầu không rút được E-HSDT trên Hệ thống","Chủ đầu tư không được phép mở thầu khi chỉ có 01 nhà thầu tham dự"],"correct":"C"},{"question":"Đối với gói thầu tổ chức đấu thầu rộng rãi qua mạng, trường hợp tại thời điểm đóng thầu mà không có nhà thầu nộp E-HSDT thì chủ đầu tư quyết định theo phương án nào sau đây?","options":["Huỷ E-TBMT để mời thầu lại","Chuyển sang hình thức đấu thầu rộng rãi không qua mạng","Cho phép gia hạn thời điểm đóng thầu tối thiểu 05 ngày làm việc đối với gói thầu xây lắp, hỗn hợp có giá gói thầu không quá 20 tỷ đồng","Phương án A và C đều đúng"],"correct":"D"},{"question":"Chào giá trực tuyến theo quy trình thông thường áp dụng đối với gói thầu nào sau đây?","options":["Dịch vụ phi tư vấn thông dụng, đơn giản","Xây lắp","Dịch vụ tư vấn","Hỗn hợp"],"correct":"A"},{"question":"Nhà thầu phải thực hiện xác nhận về việc chấp thuận được trao hợp đồng trên Hệ thống mạng đấu thầu quốc gia đối với các hình thức lựa chọn nhà thầu qua mạng nào?","options":["Đấu thầu rộng rãi, chào hàng cạnh tranh, đấu thầu hạn chế","Chào giá trực tuyến theo quy trình thông thường","Chào giá trực tuyến theo quy trình rút gọn","Các phương án trên đều đúng"],"correct":"C"},{"question":"Đối với chào giá trực tuyến rút gọn, kể từ lượt chào giá thứ hai, giá chào của nhà thầu không được thấp hơn giá thấp nhất hiển thị trên Hệ thống mạng đấu thầu quốc gia là bao nhiêu %?","options":["80%","85%","90%","95%"],"correct":"C"},{"question":"Đối với chào giá trực tuyến rút gọn, giá trị bảo đảm dự thầu tối đa là giá trị nào sau đây?","options":["5% giá gói thầu","10% giá gói thầu","1-3% giá gói thầu","Không yêu cầu về bảo đảm dự thầu"],"correct":"D"},{"question":"Mua sắm trực tuyến được áp dụng đối với hàng hoá, dịch vụ của gói thầu thuộc dự toán mua sắm với giá gói thầu có hạn mức tối đa là bao nhiêu?","options":["100 triệu đồng","300 triệu đồng","500 triệu đồng","01 tỷ đồng"],"correct":"C"},{"question":"Mua sắm trực tuyến được áp dụng đối với gói thầu nào sau đây?","options":["Gói thầu mua sắm hàng hóa, dịch vụ thuộc dự toán mua sắm có giá gói thầu không quá 500 triệu đồng; gói thầu mua sắm hàng hóa, dịch vụ thuộc dự án có giá gói thầu không quá 01 tỷ đồng","Gói thầu xây lắp thuộc dự toán mua sắm có giá gói thầu không quá 01 tỷ đồng; gói thầu xây lắp thuộc dự án có giá gói thầu không quá 02 tỷ đồng","Gói thầu mua sắm hàng hóa, cung cấp dịch vụ phi tư vấn thuộc dự án có giá gói thầu không quá 05 tỷ đồng","Phương án B và C đều đúng"],"correct":"A"},{"question":"Mua sắm trực tuyến có cần được phê duyệt trong kế hoạch lựa chọn nhà thầu không?","options":["Không phải phê duyệt trong kế hoạch lựa chọn nhà thầu","Phải được phê duyệt trong kế hoạch lựa chọn nhà thầu","Chỉ phải phê duyệt trong kế hoạch lựa chọn nhà thầu khi giá gói thầu lớn hơn 500 triệu đồng","Chỉ phải phê duyệt trong kế hoạch lựa chọn nhà thầu đối với các gói thầu thuộc dự án đầu tư"],"correct":"B"},{"question":"Theo quy định tại Thông tư số 79/2025/TTBTC, quy định về thời điểm bắt đầu và kết thúc chào giá trực tuyến theo quy trình rút gọn?","options":["Thời điểm bắt đầu và kết thúc phải trong giờ hành chính","Thời điểm bắt đầu không bắt buộc trong giờ hành chính nhưng kết thúc phải trong giờ hành chính","Thời điểm bắt đầu và kết thúc không bắt buộc trong giờ hành chính","Tất cả phương án trên đều sai"],"correct":"A"},{"question":"Gói thầu nào sau đây không phải áp dụng đấu thầu qua mạng trên Hệ thống mạng đấu thầu quốc gia?","options":["Gói thầu hỗn hợp theo phương thức 02 giai đoạn","Gói thầu đấu thầu rộng rãi quốc tế","Gói thầu áp dụng hình thức chỉ định thầu, đặt hàng, giao nhiệm vụ, mua sắm trực tiếp, tự thực hiện, đàm phán giá, lựa chọn nhà thầu trong trường hợp đặc biệt, gói thầu có sự tham gia của cộng đồng","Các phương án trên đều đúng"],"correct":"D"},{"question":"Công việc nào sau đây phải thực hiện trên Hệ thống mạng đấu thầu quốc gia?","options":["Lập E-HSMT","Trình phê duyệt E-HSMT, phê duyệt E-HSMT","Phê duyệt kết quả lựa chọn nhà thầu","Tất cả các phương án trên đều đúng"],"correct":"D"},{"question":"Loại Chứng thư số nào sau đây được sử dụng trên Hệ thống mạng đấu thầu quốc gia?","options":["Chứng thư số chuyên dùng do tất cả tổ chức có chức năng cung cấp dịch vụ chứng thực chữ ký số chuyên dùng cấp","Tất cả các loại chứng thư số","Chứng thư số công cộng do tổ chức cung cấp dịch vụ chứng thực chữ ký số công cộng cấp hoặc chứng thư số do tổ chức cung cấp dịch vụ chứng thực chữ ký số chuyên dùng Chính phủ cấp","Phương án A và C đều đúng"],"correct":"C"},{"question":"Hiện nay, Việt Nam đã mở cửa thị trường mua sắm chính phủ (đấu thầu) trong những hiệp định nào?","options":["Chỉ Hiệp định Đối tác Toàn diện và Tiến bộ Xuyên Thái Bình Dương (CPTPP)","Hiệp định CPTPP và Hiệp định thương mại tự do giữa Cộng hòa xã hội chủ nghĩa Việt Nam và Liên minh Châu Âu (EVFTA)","Hiệp định CPTPP, Hiệp định EVFTA và Hiệp định Thương mại Tự do giữa Việt Nam và Liên hiệp Vương quốc Anh và Bắc Ailen (UKVFTA)","Tất cả các hiệp định mà Việt Nam là thành viên"],"correct":"C"},{"question":"Số lượng các nước thành viên Hiệp định Đối tác Toàn diện và Tiến bộ Xuyên Thái Bình Dương (CPTPP) ký kết hiệp định ban đầu là bao nhiêu nước?","options":["8 nước","9 nước","11 nước","12 nước"],"correct":"C"},{"question":"Trong các hiệp định dưới đây, hiệp định nào không có quy định về các trường hợp chỉ định thầu?","options":["Hiệp định Đối tác Toàn diện và Tiến bộ Xuyên Thái Bình Dương (CPTPP)","Hiệp định thương mại tự do giữa Cộng hòa xã hội chủ nghĩa Việt Nam và Liên minh Châu Âu (EVFTA)","Hiệp định EVFTA và Hiệp định Thương mại Tự do giữa Việt Nam và Liên hiệp Vương quốc Anh và Bắc Ailen (UKVFTA)","Hiệp định Đối tác Kinh tế Toàn diện Khu vực (RCEP)"],"correct":"D"},{"question":"Theo các hiệp định mà Việt Nam có mở cửa thị trường mua sắm chính phủ (đấu thầu), nhà thầu nước ngoài được tham gia đấu thầu tại Việt Nam trong trường hợp nào?","options":["Tất cả các gói thầu","Chỉ gói thầu ODA","Gói thầu thuộc phạm vi điều chỉnh của hiệp định","Gói thầu có giá trị lớn, phức tạp"],"correct":"C"},{"question":"Hiệp định thương mại tự do giữa Cộng hòa xã hội chủ nghĩa Việt Nam và Liên minh Châu Âu (EVFTA) có hiệu lực từ ngày nào?","options":["01/7/2020","01/8/2020","01/9/2020","01/10/2020"],"correct":"B"},{"question":"Việt Nam chính thức trở thành thành viên của Hiệp định mua sắm chính phủ của WTO (GPA) từ năm nào?","options":["2018","2019","2020","Việt Nam chưa phải là thành viên của GPA"],"correct":"D"},{"question":"Đối với gói thầu thuộc phạm vi điều chỉnh của Hiệp định CPTPP, ngôn ngữ sử dụng trong đấu thầu nội khối là:","options":["Chỉ tiếng Việt","Chỉ tiếng Anh","Tiếng Việt; hoặc tiếng Việt và tiếng Anh","Bất kỳ ngôn ngữ nào của các nước thành viên"],"correct":"C"},{"question":"Trong Hiệp định Đối tác Toàn diện và Tiến bộ Xuyên Thái Bình Dương (CPTPP), việc áp dụng biện pháp ưu đãi trong nước:","options":["Được phép áp dụng vĩnh viễn","Không bao giờ được phép áp dụng","Được phép áp dụng trong thời gian chuyển tiếp","Tùy quy mô, tính chất từng gói thầu"],"correct":"C"},{"question":"Đối với gói thầu chỉ thuộc phạm vi điều chỉnh của Hiệp định CPTPP, thời điểm chấm dứt áp dụng ưu đãi trong nước là?","options":["14 tháng 01 năm 2038","01 tháng 8 năm 2038","14 tháng 01 năm 2044","01 tháng 8 năm 2044"],"correct":"C"},{"question":"Đàm phán giá được áp dụng trong trường hợp nào sau đây?","options":["Mua vật tư tiêu hao","Mua thuốc, thiết bị y tế, vật tư xét nghiệm chỉ có 01 hoặc 02 hãng sản xuất","Mua hàng hóa chỉ có 01 hãng sản xuất","Mua hàng hóa chỉ có 01 hoặc 02 hãng sản xuất"],"correct":"B"},{"question":"Gói thầu mua thuốc là gói thầu nào?","options":["Gói thầu mua sắm hàng hóa","Gói thầu cung cấp dịch vụ phi tư vấn","Gói thầu hỗn hợp","Gói thầu xây lắp"],"correct":"A"},{"question":"Thời gian có hiệu lực thi hành của Luật số 90/2025/QH15?","options":["Từ ngày 01 tháng 7 năm 2025","Từ ngày 04 tháng 8 năm 2025","Từ ngày 08 tháng 8 năm 2025","Tất cả các đáp án trên đều sai"],"correct":"A"},{"question":"Thông tư số 80/2025/TT-BTC quy định chi tiết mẫu hồ sơ yêu cầu, báo cáo đánh giá, báo cáo thẩm định, kiểm tra, báo cáo tình hình thực hiện hoạt động đấu thầu có hiệu lực từ thời điểm nào?","options":["Ngày 08/8/2025","Ngày 04/8/2025","Ngày 01/8/2025","Ngày 01/7/2025"],"correct":"A"}];
+
+// ════════════════════════════════════════════════════════
+// PHÂN LOẠI CHỦ ĐỀ
+// ════════════════════════════════════════════════════════
+const TOPICS = [
+  { id: 0, name: "Tổng quan Luật Đấu thầu", icon: "📖", keys: ["phạm vi điều chỉnh","đối tượng áp dụng","đấu thầu là gì","hàng hóa gồm","dịch vụ tư vấn","phi tư vấn","đấu thầu quốc tế là gì","bắt buộc phải lựa chọn","không thuộc đối tượng","ưu đãi","ngôn ngữ sử dụng","tự quyết định","giá đề nghị trúng thầu là gì","kiểm tra hoạt động","quản lý nhà nước","luật số 90","thông tư số 80"] },
+  { id: 1, name: "Kế hoạch lựa chọn nhà thầu", icon: "📋", keys: ["kế hoạch lựa chọn nhà thầu","kế hoạch tổng thể","lập kế hoạch","phê duyệt kế hoạch","nguyên tắc lập kế hoạch","đăng tải","50 triệu","giải phóng mặt bằng","thanh lý hợp đồng","giá gói thầu được cập nhật","đấu thầu trước"] },
+  { id: 2, name: "Hình thức & hạn mức LCNT", icon: "🗂️", keys: ["hình thức lựa chọn","đấu thầu rộng rãi","đấu thầu hạn chế","chào hàng cạnh tranh","chỉ định thầu","mua sắm trực tiếp","đặt hàng","hạn mức","tự thực hiện","500 triệu","02 tỷ","quy trình rút gọn","quy trình thông thường của chỉ định thầu"] },
+  { id: 3, name: "Hồ sơ mời thầu & Tiêu chuẩn đánh giá", icon: "📄", keys: ["hồ sơ mời thầu","e-hsmt","tiêu chuẩn đánh giá","xuất xứ","nhãn hiệu","hãng sản xuất","phương pháp đánh giá","giá thấp nhất","giá đánh giá","điểm tổng hợp","giá cố định","dựa trên kỹ thuật","giấy phép bán hàng","không thuộc hồ sơ mời thầu","căn cứ lập hồ sơ","phát hành hồ sơ mời thầu"] },
+  { id: 4, name: "Đánh giá hồ sơ dự thầu", icon: "✅", keys: ["đánh giá hồ sơ dự thầu","e-hsdt","năng lực","kinh nghiệm","hợp đồng tương tự","xếp hạng nhà thầu","sai lệch","bảo đảm cạnh tranh","tư cách hợp lệ","nhà thầu phụ","liên danh","làm rõ","hàng mẫu","nhân sự chủ chốt","quy trình 02","danh sách xếp hạng","đánh giá về uy tín","không vượt qua bước","thư giảm giá","ký mã hiệu","hồ sơ dự thầu của nhà thầu không được"] },
+  { id: 5, name: "Hợp đồng", icon: "📝", keys: ["hợp đồng","bảo đảm thực hiện hợp đồng","thanh toán hợp đồng","sửa đổi hợp đồng","loại hợp đồng","trọn gói","đơn giá","theo thời gian","chi phí cộng phí","tỷ lệ phần trăm","hồ sơ hợp đồng","thương thảo hợp đồng","hoàn thiện hợp đồng","thực hiện hợp đồng","thời gian có hiệu lực của bảo đảm","không được hoàn trả bảo đảm","cơ sở để thanh toán"] },
+  { id: 6, name: "Mua sắm tập trung", icon: "🏛️", keys: ["mua sắm tập trung","thỏa thuận khung","đơn vị mua sắm tập trung","đơn vị có nhu cầu mua sắm","bộ y tế ban hành","danh mục","trách nhiệm trong mua sắm"] },
+  { id: 7, name: "Đấu thầu qua mạng & Công nghệ", icon: "💻", keys: ["qua mạng","hệ thống mạng đấu thầu","chào giá trực tuyến","mua sắm trực tuyến","e-tbmt","webform","chứng thư số","bảo lãnh điện tử","hợp đồng điện tử","tài khoản nghiệp vụ","biên bản mở thầu","đóng thầu","gia hạn thời điểm","sự cố","quy trình 02","quy trình thông thường","rút gọn","bước giá","giá trần","trọng số"] },
+  { id: 8, name: "Kiến nghị & Xử lý vi phạm", icon: "⚖️", keys: ["kiến nghị","khiếu nại","cấm tham gia","vi phạm","hội đồng giải quyết kiến nghị","gian lận","cản trở","hủy thầu","đình chỉ","không công nhận","tình huống","bị cấm","thời hiệu","không có quyền cấm","chi phí giải quyết kiến nghị","hoàn trả chi phí","chấm dứt","đình chỉ cuộc thầu"] },
+  { id: 9, name: "Hiệp định thương mại quốc tế", icon: "🌏", keys: ["hiệp định","cptpp","evfta","ukvfta","nội khối","nước thành viên","nghị định 95","mở cửa thị trường","gpa","wto","chuyển đổi","ưu đãi trong nước"] }
+];
+
+function classifyQuestion(q) {
+  const text = q.question.toLowerCase();
+  const allText = text + ' ' + q.options.join(' ').toLowerCase();
+  
+  for (let i = TOPICS.length - 1; i >= 0; i--) {
+    for (const key of TOPICS[i].keys) {
+      if (allText.includes(key)) return i;
+    }
+  }
+  return 0;
+}
+
+// Assign topics
+const QUESTIONS = RAW_QUESTIONS.map((q, idx) => ({
+  ...q,
+  id: idx,
+  topic: classifyQuestion(q),
+  options: q.options.map(o => o.trim()),
+  explain: null
+}));
+
+// Group by topic
+const BY_TOPIC = {};
+TOPICS.forEach((t, i) => { BY_TOPIC[i] = QUESTIONS.filter(q => q.topic === i); });
+
+// ════════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════════
+let state = {
+  mode: null,         // 'topic' | 'all' | 'test'
+  topicId: null,
+  questions: [],
+  current: 0,
+  answers: {},        // {qId: 'A'|'B'|'C'|'D'}
+  correct: 0,
+  wrong: 0,
+  startTime: null,
+  timerInterval: null,
+  elapsed: 0,
+  sessionRetry: null
+};
+
+// Session stats
+let globalStats = JSON.parse(localStorage.getItem('dt_stats') || '{"done":0,"correct":0,"total":0}');
+let savedExplains = JSON.parse(localStorage.getItem('dt_explains') || '{}');
+
+// ════════════════════════════════════════════════════════
+// RENDER HOME
+// ════════════════════════════════════════════════════════
+function renderHome() {
+  const done = Object.keys(state.answers || {}).length;
+  document.getElementById('stat-total').textContent = QUESTIONS.length;
+  document.getElementById('stat-done').textContent = globalStats.done;
+  const pct = globalStats.total ? Math.round(globalStats.correct / globalStats.total * 100) : 0;
+  document.getElementById('stat-pct').textContent = pct + '%';
+
+  const list = document.getElementById('topic-list');
+  list.innerHTML = TOPICS.map((t, i) => {
+    const qs = BY_TOPIC[i];
+    return `<div class="topic-item" onclick="startTopic(${i})">
+      <div class="topic-num">${i+1}</div>
+      <div class="topic-info">
+        <div class="topic-name">${t.icon} ${t.name}</div>
+        <div class="topic-count">${qs.length} câu hỏi</div>
+      </div>
+      <div class="topic-progress">${qs.length}Q</div>
+    </div>`;
+  }).join('');
+}
+
+// ════════════════════════════════════════════════════════
+// START SESSION
+// ════════════════════════════════════════════════════════
+function startTopic(topicId) {
+  state = { mode:'topic', topicId, questions: BY_TOPIC[topicId], current:0, answers:{}, correct:0, wrong:0, startTime: Date.now(), timerInterval:null, elapsed:0 };
+  state.sessionRetry = () => startTopic(topicId);
+  showQuiz();
+}
+
+function startAllTopics() {
+  state = { mode:'all', topicId:null, questions: QUESTIONS, current:0, answers:{}, correct:0, wrong:0, startTime: Date.now(), timerInterval:null, elapsed:0 };
+  state.sessionRetry = startAllTopics;
+  showQuiz();
+}
+
+function startTest() {
+  const shuffled = [...QUESTIONS].sort(() => Math.random() - .5).slice(0, 70);
+  state = { mode:'test', topicId:null, questions: shuffled, current:0, answers:{}, correct:0, wrong:0, startTime: Date.now(), timerInterval:null, elapsed:0 };
+  state.sessionRetry = startTest;
+  showQuiz();
+}
+
+function retrySession() {
+  if (state.sessionRetry) state.sessionRetry();
+}
+
+// ════════════════════════════════════════════════════════
+// QUIZ UI
+// ════════════════════════════════════════════════════════
+function showQuiz() {
+  showScreen('quiz');
+  const modeLabels = { topic: 'ÔN TẬP CHỦ ĐỀ', all: 'ÔN TẤT CẢ', test: 'THI THỬ 70 CÂU' };
+  document.getElementById('quiz-mode-label').textContent = modeLabels[state.mode];
+  
+  const topicName = state.mode === 'topic' ? TOPICS[state.topicId].icon + ' ' + TOPICS[state.topicId].name 
+    : state.mode === 'all' ? '📚 Tất cả 390 câu'
+    : '⏱️ Thi thử ngẫu nhiên';
+  document.getElementById('quiz-topic-name').textContent = topicName;
+
+  // Timer only for test mode
+  const timerEl = document.getElementById('timer-badge');
+  if (state.mode === 'test') {
+    timerEl.classList.add('visible');
+    state.startTime = Date.now();
+    state.timerInterval = setInterval(updateTimer, 1000);
+  } else {
+    timerEl.classList.remove('visible');
+  }
+
+  renderQuestion();
+}
+
+function updateTimer() {
+  state.elapsed = Math.floor((Date.now() - state.startTime) / 1000);
+  const m = Math.floor(state.elapsed / 60).toString().padStart(2,'0');
+  const s = (state.elapsed % 60).toString().padStart(2,'0');
+  const el = document.getElementById('timer-badge');
+  el.textContent = m + ':' + s;
+  // Warning after 60 min
+  if (state.elapsed > 3600) el.classList.add('warning');
+}
+
+function renderQuestion() {
+  const q = state.questions[state.current];
+  const total = state.questions.length;
+  const answered = state.answers[q.id];
+
+  // Progress
+  document.getElementById('progress-text').textContent = `Câu ${state.current + 1} / ${total}`;
+  document.getElementById('progress-score').textContent = `✅ ${state.correct}  ❌ ${state.wrong}`;
+  document.getElementById('progress-fill').style.width = ((state.current / total) * 100) + '%';
+
+  document.getElementById('q-num').textContent = `CÂU ${state.current + 1}`;
+  document.getElementById('q-text').textContent = q.question;
+
+  // Options
+  const keys = ['A','B','C','D'];
+  const wrap = document.getElementById('options-wrap');
+  wrap.innerHTML = keys.map((k, i) => {
+    let cls = 'option';
+    if (answered) {
+      cls += ' disabled';
+      if (k === q.correct) cls += ' correct';
+      else if (k === answered && k !== q.correct) cls += ' wrong';
+      else if (k === answered) cls += ' selected';
+    }
+    return `<div class="${cls}" onclick="selectOption('${k}')">
+      <div class="option-key">${k}</div>
+      <div class="option-text">${q.options[i] || ''}</div>
+    </div>`;
+  }).join('');
+
+  // Result banner
+  const banner = document.getElementById('result-banner');
+  banner.className = 'result-banner';
+  if (answered) {
+    const isCorrect = answered === q.correct;
+    banner.className = 'result-banner visible ' + (isCorrect ? 'correct' : 'wrong');
+    banner.textContent = isCorrect ? '✅ Chính xác!' : `❌ Sai rồi! Đáp án đúng là ${q.correct}`;
+  }
+
+  // Explain
+  const explainBox = document.getElementById('explain-box');
+  const saved = savedExplains[q.id];
+  if (answered && saved) {
+    explainBox.classList.add('visible');
+    document.getElementById('explain-text').innerHTML = formatExplain(saved);
+    document.getElementById('btn-explain').style.display = 'none';
+  } else {
+    explainBox.classList.remove('visible');
+    document.getElementById('btn-explain').style.display = answered ? 'flex' : 'none';
+  }
+
+  // Nav buttons
+  document.getElementById('btn-prev').disabled = state.current === 0;
+  const nextBtn = document.getElementById('btn-next');
+  nextBtn.textContent = state.current === total - 1 ? 'Xem kết quả 🏁' : 'Tiếp →';
+}
+
+function selectOption(key) {
+  const q = state.questions[state.current];
+  if (state.answers[q.id]) return; // already answered
+
+  state.answers[q.id] = key;
+  const isCorrect = key === q.correct;
+  if (isCorrect) state.correct++;
+  else state.wrong++;
+
+  // Update global stats
+  globalStats.done++;
+  globalStats.total++;
+  if (isCorrect) globalStats.correct++;
+  localStorage.setItem('dt_stats', JSON.stringify(globalStats));
+
+  renderQuestion();
+}
+
+function nextQ() {
+  if (state.current >= state.questions.length - 1) {
+    showResult();
+  } else {
+    state.current++;
+    renderQuestion();
+  }
+}
+
+function prevQ() {
+  if (state.current > 0) {
+    state.current--;
+    renderQuestion();
+  }
+}
+
+// ════════════════════════════════════════════════════════
+// DEEPSEEK EXPLAIN
+// ════════════════════════════════════════════════════════
+async function getExplain() {
+  const apiKey = localStorage.getItem('dt_api_key');
+  if (!apiKey) { showApiModal(); return; }
+
+  const q = state.questions[state.current];
+  const btn = document.getElementById('btn-explain');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="loading-dots"><span></span><span></span><span></span></div> Đang tra cứu...';
+
+  const prompt = `Bạn là chuyên gia pháp luật đấu thầu Việt Nam. Hãy giải thích ngắn gọn căn cứ pháp lý cho câu hỏi sau:
+
+Câu hỏi: ${q.question}
+Đáp án đúng: ${q.correct} - ${q.options['ABCD'.indexOf(q.correct)]}
+
+Yêu cầu:
+- Chỉ ra điều khoản cụ thể (Điều X Khoản Y của Luật/Nghị định/Thông tư nào)
+- Giải thích ngắn gọn tại sao đáp án đó đúng (2-4 câu)
+- Ưu tiên trích dẫn: Luật Đấu thầu 2023 (số 22/2023/QH15), Nghị định 214/2025/NĐ-CP, Thông tư 79/2025/TT-BTC, Thông tư 80/2025/TT-BTC
+- Trả lời bằng tiếng Việt, ngắn gọn, không quá 150 từ`;
+
+  try {
+    const res = await fetch('https://api.deepseek.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        model: 'deepseek-chat',
+        messages: [{ role: 'user', content: prompt }],
+        max_tokens: 400,
+        temperature: 0.3
+      })
+    });
+
+    if (!res.ok) throw new Error('API error ' + res.status);
+    const data = await res.json();
+    const text = data.choices[0].message.content;
+
+    // Save
+    savedExplains[q.id] = text;
+    localStorage.setItem('dt_explains', JSON.stringify(savedExplains));
+
+    document.getElementById('explain-box').classList.add('visible');
+    document.getElementById('explain-text').innerHTML = formatExplain(text);
+    btn.style.display = 'none';
+  } catch (e) {
+    btn.disabled = false;
+    btn.innerHTML = '⚠️ Lỗi — thử lại';
+    if (e.message.includes('401')) {
+      alert('API key không hợp lệ. Vui lòng kiểm tra lại.');
+    }
+  }
+}
+
+function formatExplain(text) {
+  // Highlight law references
+  return text
+    .replace(/Điều\s+\d+[^\s,;]*/g, m => `<span class="law-ref">${m}</span>`)
+    .replace(/Khoản\s+\d+[^\s,;]*/g, m => `<span class="law-ref">${m}</span>`)
+    .replace(/Luật\s+\S+\s+\d{4}/g, m => `<span class="law-ref">${m}</span>`)
+    .replace(/Nghị định\s+\d+[^\s,;]*/g, m => `<span class="law-ref">${m}</span>`)
+    .replace(/Thông tư\s+\d+[^\s,;]*/g, m => `<span class="law-ref">${m}</span>`)
+    .replace(/\n/g, '<br>');
+}
+
+// ════════════════════════════════════════════════════════
+// RESULT
+// ════════════════════════════════════════════════════════
+function showResult() {
+  if (state.timerInterval) {
+    clearInterval(state.timerInterval);
+    state.elapsed = Math.floor((Date.now() - state.startTime) / 1000);
+  }
+
+  showScreen('result');
+  const total = state.questions.length;
+  const pct = Math.round(state.correct / total * 100);
+  const pass = state.mode === 'test' ? (state.correct >= 35) : (pct >= 70);
+
+  document.getElementById('res-emoji').textContent = pass ? (pct >= 90 ? '🏆' : '🎉') : '📖';
+  document.getElementById('res-score').textContent = pct + '%';
+  document.getElementById('res-score').className = 'result-score' + (pass ? '' : ' fail');
+  document.getElementById('res-detail').textContent = `${state.correct} / ${total} câu đúng`;
+  
+  if (state.mode === 'test') {
+    document.getElementById('res-pass').textContent = pass ? '✅ ĐẠT (≥35/70 câu)' : '❌ CHƯA ĐẠT (<35/70 câu)';
+  } else {
+    document.getElementById('res-pass').textContent = pass ? '✅ Xuất sắc!' : '💪 Cần ôn thêm!';
+  }
+  document.getElementById('res-pass').className = 'result-pass ' + (pass ? 'pass' : 'fail');
+
+  document.getElementById('res-correct').textContent = state.correct;
+  document.getElementById('res-wrong').textContent = state.wrong;
+  
+  const m = Math.floor(state.elapsed / 60).toString().padStart(2,'0');
+  const s = (state.elapsed % 60).toString().padStart(2,'0');
+  document.getElementById('res-time').textContent = state.mode === 'test' ? m+':'+s : '--';
+  document.getElementById('res-pct').textContent = pct + '%';
+
+  // Wrong answers
+  const wrongQs = state.questions.filter(q => state.answers[q.id] && state.answers[q.id] !== q.correct);
+  const wrongSection = document.getElementById('wrong-section');
+  if (wrongQs.length) {
+    wrongSection.style.display = 'block';
+    document.getElementById('wrong-list').innerHTML = wrongQs.map(q => {
+      const myAns = state.answers[q.id];
+      return `<div class="wrong-item" onclick="reviewQuestion(${q.id})">
+        <div class="wrong-item-q">${q.question.substring(0, 100)}${q.question.length > 100 ? '...' : ''}</div>
+        <div class="wrong-item-ans">
+          <span class="ans-wrong">Bạn: ${myAns}. ${q.options['ABCD'.indexOf(myAns)]?.substring(0,40) || ''}</span>
+          <span class="ans-right">Đúng: ${q.correct}</span>
+        </div>
+      </div>`;
+    }).join('');
+  } else {
+    wrongSection.style.display = 'none';
+  }
+}
+
+function reviewQuestion(qId) {
+  const idx = state.questions.findIndex(q => q.id === qId);
+  if (idx !== -1) {
+    state.current = idx;
+    showScreen('quiz');
+    renderQuestion();
+  }
+}
+
+// ════════════════════════════════════════════════════════
+// NAVIGATION
+// ════════════════════════════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function goHome() {
+  if (state.timerInterval) clearInterval(state.timerInterval);
+  showScreen('home');
+  renderHome();
+}
+
+// ════════════════════════════════════════════════════════
+// API KEY MODAL
+// ════════════════════════════════════════════════════════
+function showApiModal() {
+  const saved = localStorage.getItem('dt_api_key') || '';
+  document.getElementById('api-key-input').value = saved;
+  document.getElementById('modal-api').classList.add('visible');
+}
+
+function closeApiModal() {
+  document.getElementById('modal-api').classList.remove('visible');
+}
+
+function saveApiKey() {
+  const key = document.getElementById('api-key-input').value.trim();
+  if (key) {
+    localStorage.setItem('dt_api_key', key);
+    closeApiModal();
+  }
+}
+
+document.getElementById('modal-api').addEventListener('click', function(e) {
+  if (e.target === this) closeApiModal();
+});
+
+// Keyboard shortcuts
+document.addEventListener('keydown', e => {
+  if (document.getElementById('screen-quiz').classList.contains('active')) {
+    const map = { 'a':'A','b':'B','c':'C','d':'D','1':'A','2':'B','3':'C','4':'D' };
+    if (map[e.key.toLowerCase()]) selectOption(map[e.key.toLowerCase()]);
+    if (e.key === 'ArrowRight' || e.key === 'Enter') nextQ();
+    if (e.key === 'ArrowLeft') prevQ();
+  }
+});
+
+// ════════════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════════════
+renderHome();
+</script>
+</body>
+</html>
