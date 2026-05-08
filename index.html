@@ -399,6 +399,7 @@
     <div class="header-sub">390 câu hỏi nghiệp vụ</div>
   </div>
   <div class="header-right">
+    <button class="btn btn-ghost btn-sm" onclick="exportToWord()">📥 Export Word</button>
     <button class="btn btn-ghost btn-sm" onclick="showNotebookInfo()">📚 NotebookLM</button>
   </div>
 </div>
@@ -858,6 +859,68 @@ function formatExplain(text) {
     .replace(/Nghị định\s+\d+[^\s,;]*/g, m => `<span class="law-ref">${m}</span>`)
     .replace(/Thông tư\s+\d+[^\s,;]*/g, m => `<span class="law-ref">${m}</span>`)
     .replace(/\n/g, '<br>');
+}
+
+// ════════════════════════════════════════════════════════
+// EXPORT WORD (all questions + options + correct answer)
+// ════════════════════════════════════════════════════════
+function exportToWord() {
+  const questions = QUESTIONS;
+  const topics = TOPICS;
+
+  let html = `<html xmlns:o="urn:schemas-microsoft-com:office:office"
+    xmlns:w="urn:schemas-microsoft-com:office:word"
+    xmlns="http://www.w3.org/TR/REC-html40">
+<head><meta charset="UTF-8">
+<style>
+  body { font-family: 'Times New Roman',serif; font-size: 14px; line-height: 1.6; }
+  h1 { font-size: 20px; color: #2563eb; text-align: center; border-bottom: 2px solid #2563eb; padding-bottom: 8px; }
+  h2 { font-size: 16px; color: #1e40af; margin-top: 24px; border-left: 4px solid #2563eb; padding-left: 8px; }
+  .q { margin: 12px 0; padding: 8px; border: 1px solid #ddd; page-break-inside: avoid; }
+  .q-num { font-weight: bold; color: #2563eb; }
+  .q-text { font-weight: bold; margin: 4px 0; }
+  .opt { margin: 2px 0 2px 16px; }
+  .correct { color: #059669; font-weight: bold; }
+  .explain-placeholder { color: #999; font-style: italic; margin-top: 4px; }
+  #correct { color: #059669; }
+  @page { margin: 2cm; }
+</style></head><body>
+<h1>NGÂN HÀNG CÂU HỎI ÔN THI NGHIỆP VỤ ĐẤU THẦU 2025</h1>
+<p style="text-align:center;color:#666">Tổng: ${questions.length} câu — ${topics.length} chủ đề</p>
+`;
+
+  for (let t = 0; t < topics.length; t++) {
+    const tq = questions.filter(q => q.topic === t);
+    if (!tq.length) continue;
+    html += `<h2>${topics[t].icon} Chủ đề ${t+1}: ${topics[t].name} (${tq.length} câu)</h2>\n`;
+
+    for (let i = 0; i < tq.length; i++) {
+      const q = tq[i];
+      html += `<div class="q">\n`;
+      html += `<div class="q-num">Câu ${tq.length > 1 ? i+1 : ''}</div>\n`;
+      html += `<div class="q-text">${q.question}</div>\n`;
+      const keys = ['A','B','C','D'];
+      for (let ki = 0; ki < q.options.length; ki++) {
+        const isCorrect = keys[ki] === q.correct;
+        const cls = isCorrect ? 'correct' : '';
+        html += `<div class="opt ${cls}"><b>${keys[ki]}.</b> ${q.options[ki]}${isCorrect ? ' ✅ (Đáp án đúng)' : ''}</div>\n`;
+      }
+      html += `<div class="explain-placeholder">📋 Căn cứ pháp lý: ............................................................</div>\n`;
+      html += `</div>\n`;
+    }
+  }
+
+  html += `</body></html>`;
+
+  const blob = new Blob(['\ufeff' + html], { type: 'application/msword' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'Ngan_hang_cau_hoi_Dau_thau_2025.doc';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 
 // ════════════════════════════════════════════════════════
