@@ -400,7 +400,7 @@
   </div>
   <div class="header-right">
     <button class="btn btn-ghost btn-sm" onclick="exportToWord()">📥 Export Word</button>
-    <button class="btn btn-ghost btn-sm" onclick="showNotebookInfo()">📚 NotebookLM</button>
+    <button class="btn btn-ghost btn-sm" onclick="showApiModal()">🔑 API Key</button>
   </div>
 </div>
 
@@ -484,7 +484,7 @@
 
     <div class="action-row">
       <button class="btn btn-explain btn-sm" id="btn-explain" onclick="getExplain()" style="display:none">
-        📋 Tra cứu điều khoản
+        📋 Tra cứu căn cứ pháp lý
       </button>
     </div>
 
@@ -547,14 +547,15 @@
 
 </div>
 
-<!-- NOTEBOOKLM INFO MODAL -->
+<!-- API KEY MODAL -->
 <div class="modal-overlay" id="modal-api">
   <div class="modal">
-    <h3>📚 Tra cứu bằng NotebookLM</h3>
-    <p>Giải thích dựa trên <b>tài liệu pháp luật đấu thầu</b> anh đã upload lên NotebookLM (Luật Đấu thầu, Nghị định 214/2025, Thông tư 40-79-80/2025...).</p>
-    <p style="font-size:12px;color:var(--text3)">Cần chạy server local: <code>python3 server.py</code> trong thư mục dự án.</p>
+    <h3>🔑 DeepSeek API Key</h3>
+    <p>Nhập API key DeepSeek để tra cứu căn cứ pháp lý cho từng câu. Key được lưu trong trình duyệt. Mỗi câu chỉ gọi API <b>1 lần duy nhất</b>, sau đó lưu cache — lần sau mở lại không cần gọi.</p>
+    <input type="password" id="api-key-input" placeholder="sk-..." />
     <div class="modal-row">
-      <button class="btn btn-primary" style="flex:1" onclick="closeApiModal()">Đã hiểu</button>
+      <button class="btn btn-ghost" style="flex:1" onclick="closeApiModal()">Hủy</button>
+      <button class="btn btn-primary" style="flex:1" onclick="saveApiKey()">Lưu</button>
     </div>
   </div>
 </div>
@@ -805,47 +806,77 @@ function prevQ() {
 }
 
 // ════════════════════════════════════════════════════════
-// DEEPSEEK EXPLAIN
+// DEEPSEEK EXPLAIN (cache-first: gọi API 1 lần, lần sau dùng cache)
 // ════════════════════════════════════════════════════════
 async function getExplain() {
+  const apiKey = localStorage.getItem('dt_api_key');
+  if (!apiKey) { showApiModal(); return; }
+
   const q = state.questions[state.current];
   const btn = document.getElementById('btn-explain');
-  btn.disabled = true;
-  btn.innerHTML = '<div class="loading-dots"><span></span><span></span><span></span></div> Tra cứu NotebookLM...';
+  const explainBox = document.getElementById('explain-box');
+  const explainText = document.getElementById('explain-text');
 
-  const correctAnswer = q.correct + ' - ' + (q.options['ABCD'.indexOf(q.correct)] || '');
+  // Đã có cache -> hiển thị luôn
+  const cached = savedExplains[q.id];
+  if (cached) {
+    explainBox.classList.add('visible');
+    explainText.innerHTML = formatExplain(cached);
+    btn.style.display = 'none';
+    return;
+  }
+
+  // Chưa có -> gọi API
+  btn.disabled = true;
+  btn.innerHTML = '<div class="loading-dots"><span></span><span></span><span></span></div> Tra cứu DeepSeek...';
+
+  const correctIdx = 'ABCD'.indexOf(q.correct);
+  const correctText = q.options[correctIdx] || '';
+
+  const prompt = `Bạn là chuyên gia pháp luật đấu thầu Việt Nam. Hãy giải thích NGẮN GỌN căn cứ pháp lý:
+
+Câu hỏi: ${q.question}
+Đáp án đúng: ${q.correct} - ${correctText}
+
+Yêu cầu: Nêu điều khoản cụ thể (Điều X, Khoản Y, văn bản nào). Giải thích 2-3 câu tại sao đúng. Trả lời tiếng Việt.`;
 
   try {
-    const res = await fetch('http://localhost:8765/explain', {
+    const res = await fetch('https://api.deepseek.com/v1/chat/completions', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`
+      },
       body: JSON.stringify({
-        question: q.question,
-        correct_answer: correctAnswer
+        model: 'deepseek-chat',
+        messages: [{ role: 'user', content: prompt }],
+        max_tokens: 300,
+        temperature: 0.3
       })
     });
 
-    if (!res.ok) throw new Error('Server error ' + res.status);
-    const data = await res.json();
-
-    if (data.error) {
-      throw new Error(data.error);
+    if (res.status === 401) {
+      localStorage.removeItem('dt_api_key');
+      throw new Error('401');
     }
+    if (!res.ok) throw new Error('API error ' + res.status);
 
-    const text = data.answer;
+    const data = await res.json();
+    const text = data.choices[0].message.content;
 
-    // Save
+    // Lưu cache
     savedExplains[q.id] = text;
     localStorage.setItem('dt_explains', JSON.stringify(savedExplains));
 
-    document.getElementById('explain-box').classList.add('visible');
-    document.getElementById('explain-text').innerHTML = formatExplain(text);
+    explainBox.classList.add('visible');
+    explainText.innerHTML = formatExplain(text);
     btn.style.display = 'none';
   } catch (e) {
     btn.disabled = false;
     btn.innerHTML = '⚠️ Lỗi — thử lại';
-    if (e.message.includes('Failed to fetch') || e.message.includes('NetworkError')) {
-      alert('Chưa chạy server NotebookLM.\nMở terminal gõ: python3 server.py');
+    if (e.message === '401') {
+      alert('API key không hợp lệ. Vui lòng kiểm tra lại.');
+      showApiModal();
     }
   }
 }
@@ -1004,7 +1035,9 @@ function goHome() {
 // ════════════════════════════════════════════════════════
 // API KEY MODAL
 // ════════════════════════════════════════════════════════
-function showNotebookInfo() {
+function showApiModal() {
+  const saved = localStorage.getItem('dt_api_key') || '';
+  document.getElementById('api-key-input').value = saved;
   document.getElementById('modal-api').classList.add('visible');
 }
 
