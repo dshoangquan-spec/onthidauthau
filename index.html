@@ -399,7 +399,7 @@
     <div class="header-sub">390 câu hỏi nghiệp vụ</div>
   </div>
   <div class="header-right">
-    <button class="btn btn-ghost btn-sm" onclick="showApiModal()">🔑 API Key</button>
+    <button class="btn btn-ghost btn-sm" onclick="showNotebookInfo()">📚 NotebookLM</button>
   </div>
 </div>
 
@@ -483,7 +483,7 @@
 
     <div class="action-row">
       <button class="btn btn-explain btn-sm" id="btn-explain" onclick="getExplain()" style="display:none">
-        🔍 Xem giải thích
+        📋 Tra cứu điều khoản
       </button>
     </div>
 
@@ -546,15 +546,14 @@
 
 </div>
 
-<!-- API KEY MODAL -->
+<!-- NOTEBOOKLM INFO MODAL -->
 <div class="modal-overlay" id="modal-api">
   <div class="modal">
-    <h3>🔑 DeepSeek API Key</h3>
-    <p>Nhập API key để sử dụng tính năng giải thích căn cứ pháp lý. Key được lưu trong trình duyệt, không gửi đi đâu khác.</p>
-    <input type="password" id="api-key-input" placeholder="sk-..." />
+    <h3>📚 Tra cứu bằng NotebookLM</h3>
+    <p>Giải thích dựa trên <b>tài liệu pháp luật đấu thầu</b> anh đã upload lên NotebookLM (Luật Đấu thầu, Nghị định 214/2025, Thông tư 40-79-80/2025...).</p>
+    <p style="font-size:12px;color:var(--text3)">Cần chạy server local: <code>python3 server.py</code> trong thư mục dự án.</p>
     <div class="modal-row">
-      <button class="btn btn-ghost" style="flex:1" onclick="closeApiModal()">Hủy</button>
-      <button class="btn btn-primary" style="flex:1" onclick="saveApiKey()">Lưu</button>
+      <button class="btn btn-primary" style="flex:1" onclick="closeApiModal()">Đã hiểu</button>
     </div>
   </div>
 </div>
@@ -808,43 +807,31 @@ function prevQ() {
 // DEEPSEEK EXPLAIN
 // ════════════════════════════════════════════════════════
 async function getExplain() {
-  const apiKey = localStorage.getItem('dt_api_key');
-  if (!apiKey) { showApiModal(); return; }
-
   const q = state.questions[state.current];
   const btn = document.getElementById('btn-explain');
   btn.disabled = true;
-  btn.innerHTML = '<div class="loading-dots"><span></span><span></span><span></span></div> Đang tra cứu...';
+  btn.innerHTML = '<div class="loading-dots"><span></span><span></span><span></span></div> Tra cứu NotebookLM...';
 
-  const prompt = `Bạn là chuyên gia pháp luật đấu thầu Việt Nam. Hãy giải thích ngắn gọn căn cứ pháp lý cho câu hỏi sau:
-
-Câu hỏi: ${q.question}
-Đáp án đúng: ${q.correct} - ${q.options['ABCD'.indexOf(q.correct)]}
-
-Yêu cầu:
-- Chỉ ra điều khoản cụ thể (Điều X Khoản Y của Luật/Nghị định/Thông tư nào)
-- Giải thích ngắn gọn tại sao đáp án đó đúng (2-4 câu)
-- Ưu tiên trích dẫn: Luật Đấu thầu 2023 (số 22/2023/QH15), Nghị định 214/2025/NĐ-CP, Thông tư 79/2025/TT-BTC, Thông tư 80/2025/TT-BTC
-- Trả lời bằng tiếng Việt, ngắn gọn, không quá 150 từ`;
+  const correctAnswer = q.correct + ' - ' + (q.options['ABCD'.indexOf(q.correct)] || '');
 
   try {
-    const res = await fetch('https://api.deepseek.com/v1/chat/completions', {
+    const res = await fetch('http://localhost:8765/explain', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'deepseek-chat',
-        messages: [{ role: 'user', content: prompt }],
-        max_tokens: 400,
-        temperature: 0.3
+        question: q.question,
+        correct_answer: correctAnswer
       })
     });
 
-    if (!res.ok) throw new Error('API error ' + res.status);
+    if (!res.ok) throw new Error('Server error ' + res.status);
     const data = await res.json();
-    const text = data.choices[0].message.content;
+
+    if (data.error) {
+      throw new Error(data.error);
+    }
+
+    const text = data.answer;
 
     // Save
     savedExplains[q.id] = text;
@@ -856,8 +843,8 @@ Yêu cầu:
   } catch (e) {
     btn.disabled = false;
     btn.innerHTML = '⚠️ Lỗi — thử lại';
-    if (e.message.includes('401')) {
-      alert('API key không hợp lệ. Vui lòng kiểm tra lại.');
+    if (e.message.includes('Failed to fetch') || e.message.includes('NetworkError')) {
+      alert('Chưa chạy server NotebookLM.\nMở terminal gõ: python3 server.py');
     }
   }
 }
@@ -954,9 +941,7 @@ function goHome() {
 // ════════════════════════════════════════════════════════
 // API KEY MODAL
 // ════════════════════════════════════════════════════════
-function showApiModal() {
-  const saved = localStorage.getItem('dt_api_key') || '';
-  document.getElementById('api-key-input').value = saved;
+function showNotebookInfo() {
   document.getElementById('modal-api').classList.add('visible');
 }
 
